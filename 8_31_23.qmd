@@ -1,0 +1,133 @@
+---
+title: "8.31.23 Algorithms Notes"
+format: html
+editor: visual
+---
+
+## 8/31/23
+
+```{r}
+?airquality
+
+boxplot(airquality$Ozone,yloab='Ozone')
+points(mean(airquality$Ozone, na.rm=T), col = 'red')
+```
+
+```{r}
+qqnorm(airquality$Ozone); qqline(airquality$Ozone, col =2)
+```
+
+H0: Norm dist
+
+Halt: Not norm dist
+
+If the P is low, the H0 must go
+
+Here we see that our p is very small! Therefor, Not norm dist
+
+```{r}
+shapiro.test(airquality$Ozone)
+```
+
+### splitting data
+
+```{r}
+
+#Way # 1
+prof.female = prof[prof$Gender=='Female',]
+prof.male = prof[prof$Gender=='Male',]
+
+#Way #2
+prof.female = filter(prof, Gender='Female')
+prof.male = filter(prof, Gender='Male')
+
+#Way #3
+#Adding criteria
+prof.female.v2 = subset(prof, Gender == 'Female' & CITS>50)
+```
+
+## Homework help
+
+```{r}
+# install.packages('e1071')
+library(e1071)
+# install.packages('fBasics')
+library(fBasics)
+```
+
+```{r}
+summary(airquality)
+```
+
+```{r}
+# ?hist
+hist(airquality$Ozone)
+hist(airquality$Wind)
+hist(airquality$Temp)
+```
+
+### Boxplot options
+
+```{r}
+boxplot(airquality$Ozone,
+        main = 'Distribution of ozone',
+        ylab = 'ozone',
+        col = 'green')
+points(mean(airquality$Ozone, na.rm= T), col='blue',pch = 3)
+```
+
+### Discription stats for 'wind'
+
+```{r}
+summary(airquality$Wind)
+var(airquality$wind)
+range(airquality$Wind)
+skewness(airquality$Wind)
+boxplot(airquality$wind)
+```
+
+```{r}
+mean(airquality$Ozone) #this is NA! NAs are like a virus
+summary(airquality$Ozone) #37 Nas
+#therefore, gotta do this
+mean(airquality$Ozone, na.rm = T) #now it works!
+```
+
+```{r}
+#this lets us plot plots in same pannel
+par(mfrow = c(1,2))
+```
+
+how to calc mean all at once
+
+```{r}
+# 2 means row wise
+# 1 means col wise
+apply(airquality[ ,c('Ozone','Solar.R','Wind','Temp')],2, mean, na.rm= T)
+```
+
+### Normality check
+
+```{r}
+qqnorm(airquality$Wind); qqline(airquality$Wind, col = 2)
+#this looks good but some deviation... Is it good enough?
+```
+
+```{r}
+#lets check it!
+shapiro.test(airquality$Wind)
+# P > .05 Don't reject H0, Data is Normally distributed
+```
+
+## ozone by month
+
+```{r}
+boxplot(Ozone ~ Month, data = airquality, main = 'Ozone by month',
+        xlab = 'month',ylab= 'ozone')
+```
+
+## One Sample and two sample inferential test
+
+```{r}
+
+```
