@@ -61,7 +61,7 @@ summary(cars$Horsepower)
 #### D.) Use visual and quantitative methods to comment on whether an assumption of normality would be reasonable for Horsepower variable by Type, especially for Sedan, Sports, and SUV (i.e., check normality of Horsepower from Type of i) Sports, ii) SUV, and iii) Truck.
 
 1.  Visual:
-    1.   Sport and SUV follow the ideal line pretty well. Truck, not so much. These charts support Sports and SUV being Normally distributed, and Truck having a non-normal distribution.
+    1.  Sport and SUV follow the ideal line pretty well. Truck, not so much. These charts support Sports and SUV being Normally distributed, and Truck having a non-normal distribution.
 
 ```{r}
 par(mfrow = c(1,3))
@@ -152,7 +152,7 @@ July = filter(airquality, Month == '7')
 August = filter(airquality, Month == '8')
 ```
 
-### a.)  Which test should we perform, and why? See QQ-plot and perform the Shapiro-Wilk test for normality check.
+### a.) Which test should we perform, and why? See QQ-plot and perform the Shapiro-Wilk test for normality check.
 
 The data looks like it follows the ideal red line extremly well! Let's verify with our Shapiro-Wilk Normality Test.
 
@@ -167,7 +167,7 @@ qqnorm(August$Wind, main = 'August', ylab='');
 qqline(August$Wind, col =2)
 ```
 
- 1. According to the results below (High p-values, therefor cannot reject null), we can continue assuming that both groups are normally distributed.
+1.  According to the results below (High p-values, therefor cannot reject null), we can continue assuming that both groups are normally distributed.
 
 ```{r}
 # Remember:
@@ -197,9 +197,9 @@ var.test(July$Wind, August$Wind, alternative = "two.sided")
 
 1.  To review, we will use a [***pooled t-test***]{.underline}
 
-    1.   2 populations
-    2.   Both Normally distributed
-    3.   same variance between populations
+    1.  2 populations
+    2.  Both Normally distributed
+    3.  same variance between populations
 
 ### b.) Specify null and alternative hypotheses
 
