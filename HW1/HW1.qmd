@@ -7,6 +7,7 @@ editor: visual
 ## installs and imports
 
 ```{r}
+#| output: false
 library(tidyverse)
 ```
 
@@ -28,7 +29,7 @@ MPG_Combo <- 0.6*cars$MPG_City+0.4*cars$MPG_Highway
 cars=data.frame(cars,MPG_Combo)
 ```
 
-#### A.) Create a combined mpg variable called MPG_Combo which combines 60% of the MPG_City and 40% of the MPG_Highway. Obtain a box plot for MPG_Combo and comment on what the plot tells us about fuel efficiency.
+#### a.) Create a combined mpg variable called MPG_Combo which combines 60% of the MPG_City and 40% of the MPG_Highway. Obtain a box plot for MPG_Combo and comment on what the plot tells us about fuel efficiency.
 
 1.  This plot looks normally distributed but *has a large number of outliers*. The median mpg_combo miles per gallon is around 22.5 mpg. Q1 is roughly 20; Q3 is roughly 25. Min at 15, max at 30.
 
@@ -40,7 +41,7 @@ boxplot(cars$MPG_Combo,
 
 #### B.) Obtain box plots for MPG_Combo by Type and comment on any differences you notice between the different vehicle types combined fuel efficiency.
 
-These boxplots show that SUV and Truck have the worst combined mpg performance. Sedan and wagon have the best mpg performance. Sedan is also responsible for most of the outliers. Sedan (minus outliers), Sports, and SUV all *look* normally distributed. Trucks clearly are Right Skewed. Wagon seems slightly right skewed.
+These boxplots show that SUV and Truck have the worst combined mpg performance. Sedan and Wagon have the best mpg performance. Sedan is also responsible for most of the outliers. Sedan (minus outliers), Sports, and SUV all *look* normally distributed. Trucks clearly are Right Skewed. Wagon seems slightly right skewed.
 
 ```{r}
 boxplot(MPG_Combo ~ Type, 
@@ -52,13 +53,37 @@ boxplot(MPG_Combo ~ Type,
 
 #### C.) Obtain basic descriptive statistics for Horsepower for all vehicles. Comment on any general features and statistics of the data. Use visual and quantitative methods to comment on whether an assumption of Normality would be reasonable for Horsepower variable.
 
-Here we see that the mean is slightly larger than the median meaning that the data collectively could potentially be right skewed (positively skewed).
+Here we see that the mean is slightly larger than the median meaning that the data collectively could potentially be right skewed (positively skewed) however with only a difference of 6.8 it is hard to tell without further tests.
 
 ```{r}
 summary(cars$Horsepower)
 ```
 
-#### D.) Use visual and quantitative methods to comment on whether an assumption of normality would be reasonable for Horsepower variable by Type, especially for Sedan, Sports, and SUV (i.e., check normality of Horsepower from Type of i) Sports, ii) SUV, and iii) Truck.
+The box-plot is evidence towards Horsepower being right skewed.
+
+```{r}
+boxplot(cars$Horsepower)
+```
+
+This follows the theoretical curve pretty well until about +1 quantile.
+
+```{r}
+qqnorm(cars$Horsepower, main = 'HP qqplot', ylab='Horsepower'); qqline(cars$Horsepower,col =2)
+```
+
+To be thorough, we can run a Shapiro-Wilk test.
+
+H0: data is norm dist
+
+Halt: data is not norm dist
+
+Below we see a very small p-value. With a great deal of certainty we can reject the null hypothesis. Horsepower is not normally distributed.
+
+```{r}
+shapiro.test(cars$Horsepower)
+```
+
+#### D.) Use visual and quantitative methods to comment on whether an assumption of normality would be reasonable for Horsepower variable by Type, especially for Sports, SUV , and Truck (i.e., check normality of Horsepower from Type of i) Sports, ii) SUV, and iii) Truck.
 
 1.  Visual:
     1.  Sport and SUV follow the ideal line pretty well. Truck, not so much. These charts support Sports and SUV being Normally distributed, and Truck having a non-normal distribution.
@@ -82,16 +107,11 @@ qqline(Truck$Horsepower, col =2)
 
 2.  Quantitative
 
-We will use the Shapiro-Wilk test. Here we see that all 3 categories have a low enough p value to reject the Shapiro-Wilk H0. We can continue assuming that all three variables are normally distributed.
+We will use the Shapiro-Wilk test. Here we see that all 3 categories have a low enough p value to reject the Shapiro-Wilk H0. We can continue assuming that all three variables are *not* normally distributed.
 
 ```{r}
-print('SPORT-SPORT-SPORT-SPORT-SPORT-SPORT-SPORT')
 shapiro.test(Sports$Horsepower)
-
-print('SUV-SUV-SUV-SUV-SUV-SUV-SUV-SUV-SUV-SUV-SUV')
 shapiro.test(SUV$Horsepower)
-
-print('TRUCK-TRUCK-TRUCK-TRUCK-TRUCK-TRUCK-TRUCK-TRUCK')
 shapiro.test(Truck$Horsepower)
 ```
 
@@ -99,7 +119,7 @@ shapiro.test(Truck$Horsepower)
 
 ## Exercise 2: HYPOTHESIS TESTING
 
-Perform a hypothesis test of whether **SUV** has different MPG_City than **Truck**, and state your conclusions.
+Perform a hypothesis test of whether **SUV** has different Horsepower than **Truck**, and state your conclusions.
 
 \#########################################################
 
@@ -107,19 +127,21 @@ Perform a hypothesis test of whether **SUV** has different MPG_City than **Truck
 
 1.  The data has 2 populations (SUV and Truck)
 
-2.  Both data sets, according to the Shapiro-Wilk test, we know that Truck-CityMPG is normally distributed but that SUV-CityMPG is not normally distributed.
+2.  We need to know if our data is normally distributed. We will use the Shapiro-Wilk Normality Test.
+
+    SWNT H0: Normally distributed
+
+    SWNT Halt: Not Normally distributed
+
+    Below we see that both of our data sets have a p-value of less than .05. Therefore, we can continue under the assumption that both populations are *not* normally distributed.
 
     ```{r}
+    shapiro.test(SUV$Horsepower)
 
-
-    print('SUV-SUV-SUV-SUV-SUV-SUV-SUV-SUV-SUV-SUV-SUV')
-    shapiro.test(SUV$MPG_City)
-
-    print('Truck-Truck-Truck-Truck-Truck-Truck-Truck-Truck')
-    shapiro.test(Truck$MPG_City)
+    shapiro.test(Truck$Horsepower)
     ```
 
-3.  Therefore, we should use the Wilcoxen Rank test to find our results.
+3.  Since our populations are not normally distributed, the last thing that we need to test is our populations to see whether or not they fall *in the same* distribution.To do this we will perform the *Wilcoxen Rank Test*
 
 ### b.) Specify null and alternative hypotheses.
 
@@ -129,11 +151,11 @@ Perform a hypothesis test of whether **SUV** has different MPG_City than **Truck
 
 ### c.) State the conclusion based on the test result.
 
-1.  With a p value = .92, we cannot reject the null hypothesis. These two populations (Truck and SUV) are from the same population.
+1.  With a p value = .3942, we cannot reject the null hypothesis. These two populations (Truck and SUV) are from the same population.
 
 ```{r}
-wilcox.test(SUV$MPG_City,
-            Truck$MPG_City,
+wilcox.test(SUV$Horsepower,
+            Truck$Horsepower,
             alternative = 'two.sided')
 ```
 
@@ -154,7 +176,7 @@ August = filter(airquality, Month == '8')
 
 ### a.) Which test should we perform, and why? See QQ-plot and perform the Shapiro-Wilk test for normality check.
 
-The data looks like it follows the ideal red line extremly well! Let's verify with our Shapiro-Wilk Normality Test.
+The data looks like it follows the ideal red line extremely well! Let's verify with our Shapiro-Wilk Normality Test.
 
 ```{r}
 par(mfrow = c(1,2))
@@ -173,15 +195,11 @@ qqline(August$Wind, col =2)
 # Remember:
 #     H0:   Normally distributed
 #     Halt: NOT Normally Distributed
-
-print('JULY-JULY-JULY-JULY-JULY-JULY-JULY-JULY-JULY-JULY')
 shapiro.test(July$Wind)
-
-print('AUGUST-AUGUST-AUGUST-AUGUST-AUGUST-AUGUST-AUGUST')
 shapiro.test(August$Wind)
 ```
 
-Again, we have 2 populations (July & August). However, this time around we *can* assume that both groups are normally distributed. There is one more step before we continue. [Do the groups have the same variance]{.underline} (pooled t-test)? Or different (Satterthwaite t-test)
+Again, we have 2 populations (July & August). However, this time around we *can* assume that both groups are normally distributed. There is one more step before we continue. Do the groups have the same (pooled t-test) or different (Satterthwaite t-test) variances?
 
 To find out whether the two populations share variance, we must perform an F-Test
 
@@ -195,7 +213,7 @@ To find out whether the two populations share variance, we must perform an F-Tes
 var.test(July$Wind, August$Wind, alternative = "two.sided")
 ```
 
-1.  To review, we will use a [***pooled t-test***]{.underline}
+1.  To review, we will use a [***pooled t-test***]{.underline} because:
 
     1.  2 populations
     2.  Both Normally distributed
@@ -209,8 +227,12 @@ var.test(July$Wind, August$Wind, alternative = "two.sided")
 
 ### c.) State the conclusion based on the test result
 
-With a p value of .85 we cannot reject the null hypothesis. On average wind speed is the same in July and August.
+With a p value of .85 we cannot reject the null hypothesis. We conclude that on average wind speed is the same in July and August.
 
 ```{r}
 t.test(July$Wind, August$Wind, var.equal=T, alternative = 'two.sided')
+```
+
+```{r}
+
 ```
