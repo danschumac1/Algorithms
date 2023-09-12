@@ -1,3 +1,5 @@
+#Dan Schumacher
+
 library(tidyverse)
 
 #load data
@@ -52,6 +54,16 @@ shapiro.test(Truck$Horsepower)
 
 
 
+#teacher syntax
+# we need our data to only contain the variables we are testing
+suvTruck = cars %>% 
+  filter(
+    Type %in% c('SUV','Truck')
+  )
+
+wilcox.test(Horsepower ~ Type, data=suvTruck, exact=F, alternative = 'two.sided')
+
+#my original syntax
 wilcox.test(SUV$Horsepower,
             Truck$Horsepower,
             alternative = 'two.sided')
@@ -77,13 +89,31 @@ qqline(August$Wind, col =2)
 # Remember:
 #     H0:   Normally distributed
 #     Halt: NOT Normally Distributed
+#teacher syntax
+shapiro.test(airquality$Wind[airquality$Month == 7])
+shapiro.test(airquality$Wind[airquality$Month == 8])
+
+#my original syntax
 shapiro.test(July$Wind)
 shapiro.test(August$Wind)
 
 
+#teacher notation
+#make dataset of only July + Aug
+julAug = airquality %>% 
+  filter(
+    Month %in% c(7,8)
+  )
+var.test(Wind ~ Month, julAug, alternative = 'two.sided')
+
+#my original notation. Both give the same result!
 var.test(July$Wind, August$Wind, alternative = "two.sided")
 
 
+#teacher notation
+t.test(Wind ~ Month, julAug, var.equl = T, altenattive = 'two.sided')
+
+#my original notation. Gives same result.
 t.test(July$Wind, August$Wind, var.equal=T, alternative = 'two.sided')
 
 

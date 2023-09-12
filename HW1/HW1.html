@@ -108,6 +108,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>#########################################################</p>
 <section id="set-up" class="level3">
 <h3 class="anchored" data-anchor-id="set-up">Set up</h3>
+<section id="a.1-create-a-combined-mpg-variable-called-mpg_combo-which-combines-60-of-the-mpg_city-and-40-of-the-mpg_highway." class="level4">
+<h4 class="anchored" data-anchor-id="a.1-create-a-combined-mpg-variable-called-mpg_combo-which-combines-60-of-the-mpg_city-and-40-of-the-mpg_highway.">a.1) Create a combined mpg variable called MPG_Combo which combines 60% of the MPG_City and 40% of the MPG_Highway.</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load data</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cars<span class="ot">=</span><span class="fu">read.csv</span>(<span class="st">"Cars.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)  <span class="co"># read dataset</span></span>
@@ -116,8 +118,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Turn into database</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>cars<span class="ot">=</span><span class="fu">data.frame</span>(cars,MPG_Combo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="a.-create-a-combined-mpg-variable-called-mpg_combo-which-combines-60-of-the-mpg_city-and-40-of-the-mpg_highway.-obtain-a-box-plot-for-mpg_combo-and-comment-on-what-the-plot-tells-us-about-fuel-efficiency." class="level4">
-<h4 class="anchored" data-anchor-id="a.-create-a-combined-mpg-variable-called-mpg_combo-which-combines-60-of-the-mpg_city-and-40-of-the-mpg_highway.-obtain-a-box-plot-for-mpg_combo-and-comment-on-what-the-plot-tells-us-about-fuel-efficiency.">a.) Create a combined mpg variable called MPG_Combo which combines 60% of the MPG_City and 40% of the MPG_Highway. Obtain a box plot for MPG_Combo and comment on what the plot tells us about fuel efficiency.</h4>
+</section>
+<section id="a.2-obtain-a-box-plot-for-mpg_combo-and-comment-on-what-the-plot-tells-us-about-fuel-efficiency." class="level4">
+<h4 class="anchored" data-anchor-id="a.2-obtain-a-box-plot-for-mpg_combo-and-comment-on-what-the-plot-tells-us-about-fuel-efficiency.">a.2) Obtain a box plot for MPG_Combo and comment on what the plot tells us about fuel efficiency.</h4>
 <ol type="1">
 <li>This plot looks normally distributed but <em>has a large number of outliers</em>. The median mpg_combo miles per gallon is around 22.5 mpg. Q1 is roughly 20; Q3 is roughly 25. Min at 15, max at 30.</li>
 </ol>
@@ -132,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="b.-obtain-box-plots-for-mpg_combo-by-type-and-comment-on-any-differences-you-notice-between-the-different-vehicle-types-combined-fuel-efficiency." class="level4">
 <h4 class="anchored" data-anchor-id="b.-obtain-box-plots-for-mpg_combo-by-type-and-comment-on-any-differences-you-notice-between-the-different-vehicle-types-combined-fuel-efficiency.">B.) Obtain box plots for MPG_Combo by Type and comment on any differences you notice between the different vehicle types combined fuel efficiency.</h4>
-<p>These boxplots show that SUV and Truck have the worst combined mpg performance. Sedan and Wagon have the best mpg performance. Sedan is also responsible for most of the outliers. Sedan (minus outliers), Sports, and SUV all <em>look</em> normally distributed. Trucks clearly are Right Skewed. Wagon seems slightly right skewed.</p>
+<p>These boxplots show that SUV and Truck have the lowest combined mpg performance. Sedan and Wagon have the highest mpg performance. Sedan is also responsible for most of the outliers. Sedan (minus outliers), Sports, and SUV all <em>look</em> normally distributed. Trucks clearly are Right Skewed. Wagon seems slightly right skewed.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(MPG_Combo <span class="sc">~</span> Type, </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> cars, </span>
@@ -168,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="HW1_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>To be thorough, we can run a Shapiro-Wilk test.</p>
+<p>To be thorough, we will run a Shapiro-Wilk test.</p>
 <p>H0: data is norm dist</p>
 <p>Halt: data is not norm dist</p>
 <p>Below we see a very small p-value. With a great deal of certainty we can reject the null hypothesis. Horsepower is not normally distributed.</p>
@@ -253,8 +256,8 @@ W = 0.8951, p-value = 0.01697</code></pre>
 <ol type="1">
 <li><p>The data has 2 populations (SUV and Truck)</p></li>
 <li><p>We need to know if our data is normally distributed. We will use the Shapiro-Wilk Normality Test.</p>
-<p>SWNT H0: Normally distributed</p>
-<p>SWNT Halt: Not Normally distributed</p>
+<p>H0: Normally distributed</p>
+<p>Halt: Not Normally distributed</p>
 <p>Below we see that both of our data sets have a p-value of less than .05. Therefore, we can continue under the assumption that both populations are <em>not</em> normally distributed.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(SUV<span class="sc">$</span>Horsepower)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -274,7 +277,12 @@ data:  Truck$Horsepower
 W = 0.8951, p-value = 0.01697</code></pre>
 </div>
 </div></li>
-<li><p>Since our populations are not normally distributed, the last thing that we need to test is our populations to see whether or not they fall <em>in the same</em> distribution.To do this we will perform the <em>Wilcoxen Rank Test</em></p></li>
+<li><p>To review, our data :</p>
+<ol type="1">
+<li><p>has 2 populations</p></li>
+<li><p>is not normally distributed</p></li>
+</ol>
+<p>Therefore we will perform the <em>Wilcoxen Rank Test.</em></p></li>
 </ol>
 </section>
 <section id="b.-specify-null-and-alternative-hypotheses." class="level3">
@@ -290,9 +298,26 @@ W = 0.8951, p-value = 0.01697</code></pre>
 <li>With a p value = .3942, we cannot reject the null hypothesis. These two populations (Truck and SUV) are from the same population.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(SUV<span class="sc">$</span>Horsepower,</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>            Truck<span class="sc">$</span>Horsepower,</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">alternative =</span> <span class="st">'two.sided'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#teacher syntax</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># we need our data to only contain the variables we are testing</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>suvTruck <span class="ot">=</span> cars <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    Type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'SUV'</span>,<span class="st">'Truck'</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(Horsepower <span class="sc">~</span> Type, <span class="at">data=</span>suvTruck, <span class="at">exact=</span>F, <span class="at">alternative =</span> <span class="st">'two.sided'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum test with continuity correction
+
+data:  Horsepower by Type
+W = 806.5, p-value = 0.3942
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#my original syntax</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(SUV<span class="sc">$</span>Horsepower,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>            Truck<span class="sc">$</span>Horsepower,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">alternative =</span> <span class="st">'two.sided'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Wilcoxon rank sum test with continuity correction
@@ -312,22 +337,22 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 <section id="set-up-1" class="level3">
 <h3 class="anchored" data-anchor-id="set-up-1">Set up</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>July <span class="ot">=</span> <span class="fu">filter</span>(airquality, Month <span class="sc">==</span> <span class="st">'7'</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>August <span class="ot">=</span> <span class="fu">filter</span>(airquality, Month <span class="sc">==</span> <span class="st">'8'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>July <span class="ot">=</span> <span class="fu">filter</span>(airquality, Month <span class="sc">==</span> <span class="st">'7'</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>August <span class="ot">=</span> <span class="fu">filter</span>(airquality, Month <span class="sc">==</span> <span class="st">'8'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="a.-which-test-should-we-perform-and-why-see-qq-plot-and-perform-the-shapiro-wilk-test-for-normality-check." class="level3">
 <h3 class="anchored" data-anchor-id="a.-which-test-should-we-perform-and-why-see-qq-plot-and-perform-the-shapiro-wilk-test-for-normality-check.">a.) Which test should we perform, and why? See QQ-plot and perform the Shapiro-Wilk test for normality check.</h3>
 <p>The data looks like it follows the ideal red line extremely well! Let’s verify with our Shapiro-Wilk Normality Test.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Visual</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(July<span class="sc">$</span>Wind, <span class="at">main =</span> <span class="st">'July'</span>, <span class="at">ylab=</span><span class="st">'Wind'</span>); </span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(July<span class="sc">$</span>Wind,<span class="at">col =</span><span class="dv">2</span>)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(August<span class="sc">$</span>Wind, <span class="at">main =</span> <span class="st">'August'</span>, <span class="at">ylab=</span><span class="st">''</span>); </span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(August<span class="sc">$</span>Wind, <span class="at">col =</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Visual</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(July<span class="sc">$</span>Wind, <span class="at">main =</span> <span class="st">'July'</span>, <span class="at">ylab=</span><span class="st">'Wind'</span>); </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(July<span class="sc">$</span>Wind,<span class="at">col =</span><span class="dv">2</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(August<span class="sc">$</span>Wind, <span class="at">main =</span> <span class="st">'August'</span>, <span class="at">ylab=</span><span class="st">''</span>); </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(August<span class="sc">$</span>Wind, <span class="at">col =</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="HW1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -336,10 +361,42 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 <li>According to the results below (High p-values, therefor cannot reject null), we can continue assuming that both groups are normally distributed.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remember:</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     H0:   Normally distributed</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     Halt: NOT Normally Distributed</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(July<span class="sc">$</span>Wind)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remember:</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     H0:   Normally distributed</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     Halt: NOT Normally Distributed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(airquality)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Ozone Solar.R Wind Temp Month Day
+1    41     190  7.4   67     5   1
+2    36     118  8.0   72     5   2
+3    12     149 12.6   74     5   3
+4    18     313 11.5   62     5   4
+5    NA      NA 14.3   56     5   5
+6    28      NA 14.9   66     5   6</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#teacher syntax</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(airquality<span class="sc">$</span>Wind[airquality<span class="sc">$</span>Month <span class="sc">==</span> <span class="dv">7</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  airquality$Wind[airquality$Month == 7]
+W = 0.95003, p-value = 0.1564</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(airquality<span class="sc">$</span>Wind[airquality<span class="sc">$</span>Month <span class="sc">==</span> <span class="dv">8</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  airquality$Wind[airquality$Month == 8]
+W = 0.98533, p-value = 0.937</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#my original syntax</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(July<span class="sc">$</span>Wind)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Shapiro-Wilk normality test
@@ -347,7 +404,7 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 data:  July$Wind
 W = 0.95003, p-value = 0.1564</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(August<span class="sc">$</span>Wind)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(August<span class="sc">$</span>Wind)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Shapiro-Wilk normality test
@@ -364,7 +421,28 @@ W = 0.98533, p-value = 0.937</code></pre>
 <li><p>In the following code, we see a high p-value! We cannot reject H0. Therefor we will assume that the variance is the same between our populations.</p></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var.test</span>(July<span class="sc">$</span>Wind, August<span class="sc">$</span>Wind, <span class="at">alternative =</span> <span class="st">"two.sided"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#teacher notation</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co">#make dataset of only July + Aug</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>julAug <span class="ot">=</span> airquality <span class="sc">%&gt;%</span> </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    Month <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">7</span>,<span class="dv">8</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="fu">var.test</span>(Wind <span class="sc">~</span> Month, julAug, <span class="at">alternative =</span> <span class="st">'two.sided'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    F test to compare two variances
+
+data:  Wind by Month
+F = 0.8857, num df = 30, denom df = 30, p-value = 0.7418
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.4270624 1.8368992
+sample estimates:
+ratio of variances 
+         0.8857035 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#my original notation. Both give the same result!</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">var.test</span>(July<span class="sc">$</span>Wind, August<span class="sc">$</span>Wind, <span class="at">alternative =</span> <span class="st">"two.sided"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     F test to compare two variances
@@ -399,7 +477,23 @@ ratio of variances
 <h3 class="anchored" data-anchor-id="c.-state-the-conclusion-based-on-the-test-result">c.) State the conclusion based on the test result</h3>
 <p>With a p value of .85 we cannot reject the null hypothesis. We conclude that on average wind speed is the same in July and August.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(July<span class="sc">$</span>Wind, August<span class="sc">$</span>Wind, <span class="at">var.equal=</span>T, <span class="at">alternative =</span> <span class="st">'two.sided'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#teacher notation</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(Wind <span class="sc">~</span> Month, julAug, <span class="at">var.equl =</span> T, <span class="at">altenattive =</span> <span class="st">'two.sided'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  Wind by Month
+t = 0.1865, df = 59.78, p-value = 0.8527
+alternative hypothesis: true difference in means between group 7 and group 8 is not equal to 0
+95 percent confidence interval:
+ -1.443229  1.740003
+sample estimates:
+mean in group 7 mean in group 8 
+       8.941935        8.793548 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">#my original notation. Gives same result.</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(July<span class="sc">$</span>Wind, August<span class="sc">$</span>Wind, <span class="at">var.equal=</span>T, <span class="at">alternative =</span> <span class="st">'two.sided'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Two Sample t-test
