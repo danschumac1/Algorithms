@@ -6,6 +6,11 @@ author: Dan Schumacher
 date: 9/20/23
 ---
 
+```{r}
+library(ggplot2)
+library(tidyverse)
+```
+
 # Algorithms 1 Homework 2
 
 ### Exercise 1: Analysis of Variance
@@ -14,28 +19,68 @@ The heartbpchol.csv data set contains continuous cholesterol (Cholesterol) and b
 
 For the heartbpchol data set, consider a one-way ANOVA model to identify differences between group cholesterol means. The normality assumption is reasonable, so you can proceed without testing normality.
 
--   Perform a one-way ANOVA for Cholesterol with BP_Status as the categorical predictor. Comment on statistical significance of BP_Status, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
+Perform a one-way ANOVA for Cholesterol with BP_Status as the categorical predictor. Comment on statistical significance of BP_Status, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
+
+-   *Set Up*
+
+    ```{r}
+    df_hearts <- read.csv('heartbpchol.csv', header = T)
+    head(df_hearts)
+    df_hearts$BP_Status = as.factor(df_hearts$BP_Status)
+    head(df_hearts)
+    ```
+
+-   *Is our data balance?*
+
+```{r}
+#it isn't balanced?
+table(df_hearts$BP_Status) 
+```
+
+-   *Assumptions of ANOVA*
+
+    -   ~~*Variable types:*~~ *1 quantitative, 1 qualitative*
+
+    -   *I~~ndependence:~~ representative random sample*
+
+    -   ~~*Normality*~~*: We are told in the instructions to trust*
+
+    -   *Equal Variances: We will test with a box plot and*
+
+```{r}
+# The Variance looks pretty equal, Optimal is a little smaller.
+boxplot(Cholesterol ~ BP_Status, data = df_hearts)
+aov.df_hearts = aov(Cholesterol ~ BP_Status, data = df_hearts)
+```
 
 -   Comment on any significantly different cholesterol means as determined by the post-hoc test comparing all pairwise differences. Specifically explain what that tells us about differences in cholesterol levels across blood pressure status groups, like which group has the highest or lowest mean values of Cholesterol.
 
 ### Exercise 2: Analysis of Variance
 
-+---------------+------------------------------------------------------------------------------------+
-| Variable Name | Description                                                                        |
-+===============+====================================================================================+
-| mcv           | mean corpuscular volume                                                            |
-+---------------+------------------------------------------------------------------------------------+
-| alkphos       | alkaline phosphatase                                                               |
-+---------------+------------------------------------------------------------------------------------+
-| drinkgroup    | categorization of the half-pint equivalents of alcoholic beverages drunk per day:\ |
-|               |                                                                                    |
-|               | **group 1 :**\                                                                     |
-|               | less than 1 drink. **group 2 :**\                                                  |
-|               | at least 1 but fewer than 3 drinks. **group 3 :**\                                 |
-|               | at least 3 but fewer than 6 drinks. **group 4 :**\                                 |
-|               | at 6 but fewer than 9 drinks. g**roup 5 :**\                                       |
-|               | 9 or more drinks.                                                                  |
-+---------------+------------------------------------------------------------------------------------+
++---------------+-----------------------------------------------------------------------------------+
+| Variable Name | Description                                                                       |
++===============+===================================================================================+
+| mcv           | mean corpuscular volume                                                           |
++---------------+-----------------------------------------------------------------------------------+
+| alkphos       | alkaline phosphatase                                                              |
++---------------+-----------------------------------------------------------------------------------+
+| drinkgroup    | categorization of the half-pint equivalents of alcoholic beverages drunk per day: |
+|               |                                                                                   |
+|               | **group 1 :**\                                                                    |
+|               | less than 1 drink.                                                                |
+|               |                                                                                   |
+|               | **group 2 :**\                                                                    |
+|               | at least 1 but fewer than 3 drinks.                                               |
+|               |                                                                                   |
+|               | **group 3 :**\                                                                    |
+|               | at least 3 but fewer than 6 drinks.                                               |
+|               |                                                                                   |
+|               | **group 4 :**\                                                                    |
+|               | at 6 but fewer than 9 drinks.                                                     |
+|               |                                                                                   |
+|               | g**roup 5 :**\                                                                    |
+|               | 9 or more drinks.                                                                 |
++---------------+-----------------------------------------------------------------------------------+
 
 -   Perform a one-way ANOVA for mcv as a function of drinkgroup. Comment on significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
 
