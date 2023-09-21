@@ -11,6 +11,7 @@ library(tidyverse)
 ```{r}
 #need to use relative path now that I moved that file...
 tooth <-read.csv('Data/ToothGrowth.csv')
+tooth <-read.csv('ToothGrowth.csv')
 ```
 
 ```{r}
