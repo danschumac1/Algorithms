@@ -9,6 +9,8 @@ date: 9/20/23
 ```{r}
 library(ggplot2)
 library(tidyverse)
+library(DescTools)
+library(MASS)
 ```
 
 # Algorithms 1 Homework 2
@@ -50,7 +52,13 @@ table(df_hearts$BP_Status)
 ```{r}
 # The Variance looks pretty equal, Optimal is a little smaller.
 boxplot(Cholesterol ~ BP_Status, data = df_hearts)
+
+#what does this step do?
 aov.df_hearts = aov(Cholesterol ~ BP_Status, data = df_hearts)
+
+LeveneTest(aov.df_hearts)
+summary(aov.df_hearts)
+plot(aov.df_hearts)
 ```
 
 -   Comment on any significantly different cholesterol means as determined by the post-hoc test comparing all pairwise differences. Specifically explain what that tells us about differences in cholesterol levels across blood pressure status groups, like which group has the highest or lowest mean values of Cholesterol.
