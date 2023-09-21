@@ -53,7 +53,7 @@ table(df_hearts$BP_Status)
 
     H0: muH = muN = muO
 
-    Halt: @ least 1 not equal.
+    Halt: \@ least 1 not equal.
 
 -   with Levene's p-val of 0.8332 we cannot reject Levene's H0: Equal variance amongst groups
 
