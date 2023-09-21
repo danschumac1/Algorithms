@@ -1,0 +1,78 @@
+---
+title: "9_14_23 Notes"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+#need to use relative path now that I moved that file...
+tooth <-read.csv('Data/ToothGrowth.csv')
+```
+
+```{r}
+view(tooth)
+str(tooth)
+
+#is it balanced or not?
+#if it is 1-way it doesn't matter
+#here we see that there are 3 levels and each level has 20 obs
+table(tooth$Dose); table(tooth$Supplement)
+
+
+```
+
+H0: mu.5 = mu1 = mu2
+
+Halt: \@ least 1 group has dif mean
+
+```{r}
+#check equal var using leven's test
+#H0:  all have same
+#Halt: at least 1 group has dif var
+
+#looking at these plots the variation between groups is quite large!
+# We can not say for sure whether there is a dose test
+boxplot(Toothlength ~ Dose, data = tooth, main = 'distribution of tooth length by dose')
+```
+
+```{r}
+aov.tooth = aov(Toothlength~Dose, data = tooth)
+
+#to see the result
+summary(aov.tooth)
+
+#EXPLANATION 
+#H0: No dose effect
+#Halt: Dose effect 
+# Pr(>F) is our p-value
+# Dose sumsq is SSmodel
+# Residuls Sumsq is SSError
+```
+
+```{r}
+#this returns the same but is a more generalized funciton
+lm.res = lm(Toothlength ~ Dose, data = tooth)
+anova(lm.res)
+
+#now if you want r-squared
+summary(lm.res)$r.squared
+```
+
+## one way anova case
+
+```{r}
+# ONLY WORKS FOR 1 WAY ANOVA IN R
+# H0: equal var
+# Halt: @ least 1 not equal
+
+#Don't reject -> anova
+# do reject -> welche's anova (ONLY FOR 1 WAY)
+library(desctools); library(MASS)
+leveneTest(aov.res)
+
+oneway.test(Toothlength ~ Dose, data = tooth, var.equal = F)
+```

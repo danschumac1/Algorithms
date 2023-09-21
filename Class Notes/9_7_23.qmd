@@ -1,0 +1,166 @@
+---
+title: "9_7_23 Notes"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+water = read.table('WATER.txt', header = T)
+```
+
+```{r}
+head(water,5)
+
+
+```
+
+lets do a one-way test for mortality rate
+
+H0: mort =
+
+Halt: mort !=
+
+```{r}
+summary(water$mortal)
+hist(water$mortal)
+boxplot(water$mortal); points(mean(water$mortal), col = 'red')
+qqnorm(water$mortal); qqline(water$mortal, col =2)
+
+#with a p-value of .69, can't reject null, we can assume normality
+shapiro.test(water$mortal)
+```
+
+One sample t test
+
+H0: mu = 15000
+
+Halt: mu != 1500
+
+```{r}
+#with a p-value of of .319, we cannot reject the null.
+t.test(water$mortal, mu = 1500, alternative = 'two.sided')
+```
+
+Same 1 pop test for hardness
+
+H0: m=45
+
+Halt: mu != 45
+
+```{r}
+summary(water$hardness)
+hist(water$hardness)
+boxplot(water$hardness); points(mean(water$hardness), col = 'red')
+qqnorm(water$hardness); qqline(water$hardness, col =2)
+
+#with a p-value of *super small*, we reject null, we can not normality
+shapiro.test(water$hardness)
+```
+
+```{r}
+library(BSDA)
+
+#with a p-val of .4426, we cannot reject null. we can assume that md = 45
+SIGN.test(water$hardness, md = 45)
+```
+
+## 2 population
+
+Are south and north group
+
+Need to check normality S and normality N
+
+```{r}
+south = water %>%
+  filter(location == 'S')
+```
+
+```{r}
+#with a p-val of .88 cannot reject equal var.
+var.test(mortal ~ location, data = water, alternative = 'two.sided')
+
+```
+
+So we do the pooled t-test
+
+```{r}
+#with a small p-value, reject the null. They do not have equal means of normality.
+t.test(mortal ~ location, water, alternative = 'two.sided', var.equal=T)
+```
+
+## 2 pop comparing hardness
+
+First need to check for normality
+
+```{r}
+South = filter(water, location == 'S')$hardness
+North = filter(water, location == 'N')
+
+#high p-value
+shapiro.test(water$hardness[water$location == 'S'])
+# low p
+shapiro.test(water$hardness[water$location == 'N'])
+```
+
+```{r}
+#low p. Hardness S vs N not the same!
+wilcox.test( hardness ~ location, data = water, exact=F)S
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Transforming Data
+```{r}
+load('Research.Rdata')
+
+#check normality
+boxplot(salary ~ field, data = research)
+shapiro.test(research$salary)
+
+research <- research
+
+head(research)
+research <- research %>% 
+  mutate(
+    scaled_salary = log(salary)
+  )
+head(research)
+
+#now it is normal
+shapiro.test(research$scaled_salary)
+
+```
+# Anova (Analysis of Variance)
+up until now we were exploring one or two groups.
+

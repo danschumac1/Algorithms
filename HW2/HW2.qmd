@@ -35,7 +35,7 @@ Perform a one-way ANOVA for Cholesterol with BP_Status as the categorical predic
 -   *Is our data balance?*
 
 ```{r}
-#it isn't balanced?
+# it isn't balanced but the tests stay the same
 table(df_hearts$BP_Status) 
 ```
 
@@ -45,25 +45,58 @@ table(df_hearts$BP_Status)
 
     -   *I~~ndependence:~~ representative random sample*
 
-    -   ~~*Normality*~~*: We are told in the instructions to trust*
+    -   ~~*Normality*~~*: We are told in the instructions to trust (normal qqplot looked good)*
 
-    -   *Equal Variances: We will test with a box plot and*
+    -   ~~*Equal Variances*~~*: We will test with a box plot and3 (passed with Levene*
+
+-   [ANOVA Hypothesis]{.underline}
+
+    H0: muH = muN = muO
+
+    Halt: @ least 1 not equal.
+
+-   with Levene's p-val of 0.8332 we cannot reject Levene's H0: Equal variance amongst groups
+
+-   With an ANOVA p-value of .00137, we can reject H0, and accept Halt: At least one group has a different mean.
 
 ```{r}
 # The Variance looks pretty equal, Optimal is a little smaller.
 boxplot(Cholesterol ~ BP_Status, data = df_hearts)
 
-#what does this step do?
-aov.df_hearts = aov(Cholesterol ~ BP_Status, data = df_hearts)
+# what does this step do?
+# we use the anova model before verify assumptions to take advantage of the LT test
+# this generates anova output
+aov.hearts = aov(Cholesterol ~ BP_Status, data = df_hearts)
 
-LeveneTest(aov.df_hearts)
-summary(aov.df_hearts)
-plot(aov.df_hearts)
+# tests for equal var (use for 1-way ANOVA or 2-way Balanced*** maybe)
+# p-val = 0.8332 can't reject H0: Equal variance amongst groups
+LeveneTest(aov.hearts)
+
+# visually test equal var Larger than 2 way just use visual
+plot(aov.hearts)
+
+# now we can interpret aov results
+# with a p-val .00137 we reject H0 and accept Halt: at least 1 group has ***
+summary(aov.hearts)
 ```
 
 -   Comment on any significantly different cholesterol means as determined by the post-hoc test comparing all pairwise differences. Specifically explain what that tells us about differences in cholesterol levels across blood pressure status groups, like which group has the highest or lowest mean values of Cholesterol.
 
 ### Exercise 2: Analysis of Variance
+
+For this problem use the bupa.csv data set. Check UCI Machine Learning Repository for more\
+information (http://archive.ics.uci.edu/ml/datasets/Liver+Disorders). The mean corpuscular volume and\
+alkaline phosphates are blood tests thought to be sensitive to liver disorder related to excessive alcohol\
+consumption. We assume that normality and independence assumptions are valid
+
+```{r}
+df_bupa <- read.csv('bupa.csv')
+head(df_bupa)
+
+#change drinkgroup to factor var
+df_bupa$drinkgroup <- as.factor(df_bupa$drinkgroup)
+head(df_bupa)
+```
 
 +---------------+-----------------------------------------------------------------------------------+
 | Variable Name | Description                                                                       |
@@ -86,21 +119,58 @@ plot(aov.df_hearts)
 |               | **group 4 :**\                                                                    |
 |               | at 6 but fewer than 9 drinks.                                                     |
 |               |                                                                                   |
-|               | g**roup 5 :**\                                                                    |
+|               | **group 5 :**\                                                                    |
 |               | 9 or more drinks.                                                                 |
 +---------------+-----------------------------------------------------------------------------------+
 
--   Perform a one-way ANOVA for mcv as a function of drinkgroup. Comment on significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
+Perform a one-way ANOVA for mcv as a function of drinkgroup. Comment on significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
 
--   Perform a one-way ANOVA for alkphos as a function of drinkgroup. Comment on statistical significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
+-   with Levene's p-val of .87 we cannot reject Levene's H0: Equal variance amongst groups
 
--   Perform post-hoc tests for models in a) and b). Comment on any similarities or differences you observe from their results.
+-   With an ANOVA p-value of 7.43e-08, we can reject H0, and accept Halt: At least one group has a different mean.
+
+```{r}
+aov.mcv = aov(mcv ~ drinkgroup , data = df_bupa)
+LeveneTest(aov.mcv)
+summary(aov.mcv)
+```
+
+Perform a one-way ANOVA for alkphos as a function of drinkgroup. Comment on statistical significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
+
+-   with Levene's p-val of .52 we cannot reject Levene's H0: Equal variance amongst groups
+
+-   With an ANOVA p-val of .00495, we can reject H0 and accept Halt: At least one group has a different mean.
+
+```{r}
+aov.alkphos = aov(alkphos ~ drinkgroup , data = df_bupa)
+LeveneTest(aov.alkphos)
+summary(aov.alkphos)
+```
+
+Perform post-hoc tests for models in a) and b). Comment on any similarities or differences you observe from their results.
 
 ### Exercise 3
 
-The psychology department at a hypothetical university has been accused of underpaying female facultymembers. The data represent salary (in thousands of dollars) for all 22 professors in the department. This problem is from Maxwell and Delaney (2004).
+The psychology department at a hypothetical university has been accused of underpaying female faculty members. The data represent salary (in thousands of dollars) for all 22 professors in the department. This problem is from Maxwell and Delaney (2004).
+
+```{r}
+df_psych <- read.csv('psych.csv')
+df_psych$sex <- as.factor(df_psych$sex)
+df_psych$rank <- as.factor(df_psych$rank)
+head(df_psych)
+```
 
 Fit a two-way ANOVA model including sex (F, M) and rank (Assistant, Associate) the interaction term. What do the Type 1 and Type 3 sums of squares tell us about significance of effects? Is the interaction between sex and rank significant? Also comment on the variation explained by the model.
+
+```{r}
+aov.psych <- aov(salary ~ sex + rank, data = df_psych)
+
+#Check for Variance with 2-way, just use visual
+plot(aov.psych) #looks good!
+
+print(aov.psych)
+summary(aov.psych)
+```
 
 -   Refit the model without the interaction term. Comment on the significance of effects and variation explained. Report and interpret the Type 1 and Type 3 tests of the main effects. Are the main effects of rank and sex significant?
 
