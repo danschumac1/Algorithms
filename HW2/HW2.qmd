@@ -1,0 +1,56 @@
+---
+title: "HW2"
+format: html
+editor: visual
+author: Dan Schumacher
+date: 9/20/23
+---
+
+# Algorithms 1 Homework 2
+
+### Exercise 1: Analysis of Variance
+
+The heartbpchol.csv data set contains continuous cholesterol (Cholesterol) and blood pressure status (BP_Status) (category: High/ Normal/ Optimal) for alive patients.\
+
+For the heartbpchol data set, consider a one-way ANOVA model to identify differences between group cholesterol means. The normality assumption is reasonable, so you can proceed without testing normality.
+
+-   Perform a one-way ANOVA for Cholesterol with BP_Status as the categorical predictor. Comment on statistical significance of BP_Status, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
+
+-   Comment on any significantly different cholesterol means as determined by the post-hoc test comparing all pairwise differences. Specifically explain what that tells us about differences in cholesterol levels across blood pressure status groups, like which group has the highest or lowest mean values of Cholesterol.
+
+### Exercise 2: Analysis of Variance
+
++---------------+------------------------------------------------------------------------------------+
+| Variable Name | Description                                                                        |
++===============+====================================================================================+
+| mcv           | mean corpuscular volume                                                            |
++---------------+------------------------------------------------------------------------------------+
+| alkphos       | alkaline phosphatase                                                               |
++---------------+------------------------------------------------------------------------------------+
+| drinkgroup    | categorization of the half-pint equivalents of alcoholic beverages drunk per day:\ |
+|               |                                                                                    |
+|               | **group 1 :**\                                                                     |
+|               | less than 1 drink. **group 2 :**\                                                  |
+|               | at least 1 but fewer than 3 drinks. **group 3 :**\                                 |
+|               | at least 3 but fewer than 6 drinks. **group 4 :**\                                 |
+|               | at 6 but fewer than 9 drinks. g**roup 5 :**\                                       |
+|               | 9 or more drinks.                                                                  |
++---------------+------------------------------------------------------------------------------------+
+
+-   Perform a one-way ANOVA for mcv as a function of drinkgroup. Comment on significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
+
+-   Perform a one-way ANOVA for alkphos as a function of drinkgroup. Comment on statistical significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
+
+-   Perform post-hoc tests for models in a) and b). Comment on any similarities or differences you observe from their results.
+
+### Exercise 3
+
+The psychology department at a hypothetical university has been accused of underpaying female facultymembers. The data represent salary (in thousands of dollars) for all 22 professors in the department. This problem is from Maxwell and Delaney (2004).
+
+Fit a two-way ANOVA model including sex (F, M) and rank (Assistant, Associate) the interaction term. What do the Type 1 and Type 3 sums of squares tell us about significance of effects? Is the interaction between sex and rank significant? Also comment on the variation explained by the model.
+
+-   Refit the model without the interaction term. Comment on the significance of effects and variation explained. Report and interpret the Type 1 and Type 3 tests of the main effects. Are the main effects of rank and sex significant?
+
+-   Obtain model diagnostics to validate your Normality assumptions. Choose a final model based on your results from parts (a) and (b). Comment on any significant group differences through the post-hoc test. State the differences in salary across different main effect groups and interaction (if included) between them.
+
+-   Hint: For interpretations of differences for the main effects, state quantitative interpretations of the significantly different groups (e.g. estimated differences between groups and what the difference tells us about salary). For interaction term, identify significant interactions, but no need to interpret it quantitatively.
