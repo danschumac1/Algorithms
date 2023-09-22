@@ -11,6 +11,7 @@ library(ggplot2)
 library(tidyverse)
 library(DescTools)
 library(MASS)
+library(car)
 ```
 
 # Algorithms 1 Homework 2
@@ -32,10 +33,10 @@ Perform a one-way ANOVA for Cholesterol with BP_Status as the categorical predic
     head(df_hearts)
     ```
 
--   *Is our data balance?*
+-   *Is our data balanced?*
 
 ```{r}
-# it isn't balanced but the tests stay the same
+# it isn't balanced but the tests stay the same for 1-way ANOVA
 table(df_hearts$BP_Status) 
 ```
 
@@ -49,15 +50,15 @@ table(df_hearts$BP_Status)
 
     -   ~~*Equal Variances*~~*: We will test with a box plot and3 (passed with Levene*
 
--   [ANOVA Hypothesis]{.underline}
+-   [*ANOVA Hypothesis*]{.underline}
 
-    H0: muH = muN = muO
+    *H0:* $\mu_H = \mu_N = \mu_O$
 
-    Halt: \@ least 1 not equal.
+    *Halt: \@ least 1 not equal.*
 
--   with Levene's p-val of 0.8332 we cannot reject Levene's H0: Equal variance amongst groups
+-   *with Levene's p-val of 0.8332 we cannot reject Levene's H0: Equal variance amongst groups*
 
--   With an ANOVA p-value of .00137, we can reject H0, and accept Halt: At least one group has a different mean.
+-   *With an ANOVA p-value of .00137, we can reject H0, and accept Halt: At least one group has a different mean.*
 
 ```{r}
 # The Variance looks pretty equal, Optimal is a little smaller.
@@ -80,14 +81,21 @@ plot(aov.hearts)
 summary(aov.hearts)
 ```
 
--   Comment on any significantly different cholesterol means as determined by the post-hoc test comparing all pairwise differences. Specifically explain what that tells us about differences in cholesterol levels across blood pressure status groups, like which group has the highest or lowest mean values of Cholesterol.
+Comment on any significantly different cholesterol means as determined by the post-hoc test comparing all pairwise differences. Specifically explain what that tells us about differences in cholesterol levels across blood pressure status groups, like which group has the highest or lowest mean values of Cholesterol.
+
+-   $\mu_H > \mu_N$ *High \> Normal*
+
+-   $\mu_H > \mu_O$ *High \> Optimal*
+
+-   *The high blood pressure group has a higher average cholesterol than both the normal and optimal group.*
+
+    ```{r}
+    ScheffeTest(aov.hearts)
+    ```
 
 ### Exercise 2: Analysis of Variance
 
-For this problem use the bupa.csv data set. Check UCI Machine Learning Repository for more\
-information (http://archive.ics.uci.edu/ml/datasets/Liver+Disorders). The mean corpuscular volume and\
-alkaline phosphates are blood tests thought to be sensitive to liver disorder related to excessive alcohol\
-consumption. We assume that normality and independence assumptions are valid
+For this problem use the bupa.csv data set. [Check UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/datasets/Liver+Disorders) for more information. The mean corpuscular volume and alkaline phosphates are blood tests thought to be sensitive to liver disorder related to excessive alcohol consumption. We assume that normality and independence assumptions are valid.
 
 ```{r}
 df_bupa <- read.csv('bupa.csv')
@@ -125,9 +133,9 @@ head(df_bupa)
 
 Perform a one-way ANOVA for mcv as a function of drinkgroup. Comment on significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
 
--   with Levene's p-val of .87 we cannot reject Levene's H0: Equal variance amongst groups
+-   *with Levene's p-val of .87 we cannot reject Levene's H0: Equal variance amongst groups*
 
--   With an ANOVA p-value of 7.43e-08, we can reject H0, and accept Halt: At least one group has a different mean.
+-   *With an ANOVA p-value of 7.43e-08, we can reject H0, and accept Halt: At least one group has a different mean.*
 
 ```{r}
 aov.mcv = aov(mcv ~ drinkgroup , data = df_bupa)
@@ -137,9 +145,9 @@ summary(aov.mcv)
 
 Perform a one-way ANOVA for alkphos as a function of drinkgroup. Comment on statistical significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.
 
--   with Levene's p-val of .52 we cannot reject Levene's H0: Equal variance amongst groups
+-   *With Levene's p-val of .52 we cannot reject Levene's H0: Equal variance amongst groups*
 
--   With an ANOVA p-val of .00495, we can reject H0 and accept Halt: At least one group has a different mean.
+-   *With an ANOVA p-val of .00495, we can reject H0 and accept Halt: At least one group has a different mean.*
 
 ```{r}
 aov.alkphos = aov(alkphos ~ drinkgroup , data = df_bupa)
@@ -147,7 +155,45 @@ LeveneTest(aov.alkphos)
 summary(aov.alkphos)
 ```
 
-Perform post-hoc tests for models in a) and b). Comment on any similarities or differences you observe from their results.
+#### Post Hoc
+
+Perform post-hoc tests for models in mcv and alkphos.
+
+##### MCV Post Hoc
+
+-   $\mu_4 > \mu_1$\
+    *People that drink between 6 and 8 drinks a day have a higher MCV on average than people who have less than 1 drink a day.*
+
+-   $\mu_5 > \mu_1$*\
+    People that drink 9 or more drinks a day have a higher MCV on average than people who have less than 1 drink a day.*
+
+-   $\mu_4 > \mu_2$*\
+    People that drink between 6 and 8 drinks a day have a higher MCV on average than people who 1 or 2 drinks per day.*
+
+-   $\mu_4 > \mu_3$*\
+    People that drink between 6 and 8 drinks a day have a higher MCV on average than people who 3 to 5 drinks per day.*
+
+```{r}
+ScheffeTest(aov.mcv)
+```
+
+##### Alkphos Post Hoc
+
+-   $\mu_5 > \mu_2$\
+    *People that drink 9 or more drinks a day have a higher Alkphos on average than people who 1 or 2 drinks per day.*
+
+-   $\mu_5 > \mu_3$*\
+    People that drink 9 or more drinks a day have a higher Alkphos on average than people who 3 to 5 drinks per day.*
+
+```{r}
+ScheffeTest(aov.alkphos)
+```
+
+##### Comparing MCV and Alkphos Post Hocs
+
+Comment on any similarities or differences you observe from their results.
+
+-   *There was no significant difference in means in either the MCV or alkphos test where a group that drank [less]{.underline} when compared to a group that drank more. The significant difference always showed a heavier drinking group with a larger mean than the lighter drinkers.*
 
 ### Exercise 3
 
@@ -160,20 +206,163 @@ df_psych$rank <- as.factor(df_psych$rank)
 head(df_psych)
 ```
 
-Fit a two-way ANOVA model including sex (F, M) and rank (Assistant, Associate) the interaction term. What do the Type 1 and Type 3 sums of squares tell us about significance of effects? Is the interaction between sex and rank significant? Also comment on the variation explained by the model.
+Fit a two-way ANOVA model including sex (F, M) and rank (Assistant, Associate) and the interaction term.
 
 ```{r}
-aov.psych <- aov(salary ~ sex + rank, data = df_psych)
+# Make ANOVA model
+aov.psych.sr <- aov(salary ~ sex * rank, data = df_psych)
+aov.psych.rs <- aov(salary ~ rank * sex, data = df_psych)
 
 #Check for Variance with 2-way, just use visual
-plot(aov.psych) #looks good!
+par(mfrow = c(1,2)) ; plot(aov.psych.sr, c(1,2))
+par(mfrow = c(1,2)) ; plot(aov.psych.rs, c(1,2))
+#looks good!
 
-print(aov.psych)
-summary(aov.psych)
+# These are Type 1 tests sr = sex -> rank. rs is reverse
+summary(aov.psych.sr)
+summary(aov.psych.rs)
+Anova(aov.psych.rs, type = 3)
 ```
 
--   Refit the model without the interaction term. Comment on the significance of effects and variation explained. Report and interpret the Type 1 and Type 3 tests of the main effects. Are the main effects of rank and sex significant?
+What do the Type 1 and Type 3 sums of squares tell us about significance of effects? Is the interaction between sex and rank significant? Also comment on the variation explained by the model.
 
--   Obtain model diagnostics to validate your Normality assumptions. Choose a final model based on your results from parts (a) and (b). Comment on any significant group differences through the post-hoc test. State the differences in salary across different main effect groups and interaction (if included) between them.
+*I ran the following tests and got the following results:*
 
--   Hint: For interpretations of differences for the main effects, state quantitative interpretations of the significantly different groups (e.g. estimated differences between groups and what the difference tells us about salary). For interaction term, identify significant interactions, but no need to interpret it quantitatively.
+-   *Type 1 sex \* rank*
+
+    -   *Tells us that there is a significant difference in mean salary based on both rank and sex not off the interaction effect of the two.*
+
+-   *Type 1 rank \* sex*
+
+    -   *Tells us the same as above \^\^\^*
+
+-   *Type 3*
+
+    -   *Tells us that only sex has a significant difference in mean salary.*
+
+*Variation Explained:*
+
+-   *All of the tests above had a high f-value for rank. And both the Type 1 tests had a high f-value for sex. This means that our model explains the variance extremely well in those cases.*
+
+Refit the model without the interaction term.
+
+```{r}
+aov.psych.no_interaction_term <- 
+  aov(salary ~ sex + rank, data = df_psych)
+
+summary(aov.psych.no_interaction_term)
+Anova(aov.psych.no_interaction_term, type = 3)
+```
+
+Comment on the significance of effects and variation explained. Report and interpret the Type 1 and Type 3 tests of the main effects. Are the main effects of rank and sex significant?
+
+-   *Type 1*
+    -   *Tells us that there is a significant difference in mean salary based on both rank and sex.*
+-   *Type 3*
+    -   *Tells us the same as above \^\^\^*
+
+Obtain model diagnostics to validate your Normality assumptions. Choose a final model based on your results from parts (a) and (b). Comment on any significant group differences through the post-hoc test.
+
+```{r}
+# I have already checked for Normality above.
+
+# I picked the aov.psych.no_interaction_term as my model because we are primarily concered about the interaction between sex and salary. This is a simpler model because it doesn not include the interaction effect. Simpler is good.
+
+ScheffeTest(aov.psych.no_interaction_term)
+```
+
+State the differences in salary across different main effect groups and interaction (if included) between them.
+
+-   Males make \$5,340 more on average than females.
+
+-   Associates make \$5,378 more on average than assistants
+
+### Exercise 4
+
+##### Set Up
+
+```{r}
+df_cars <- read.csv('cars_new.csv')
+df_cars$cylinders <- as.factor(df_cars$cylinders)
+df_cars$origin <- as.factor(df_cars$origin)
+df_cars$type <- as.factor(df_cars$type)
+head(df_cars)
+
+#our data is unbalanced
+table(df_cars$cylinders);table(df_cars$origin);table(df_cars$type);
+```
+
+a\) Start with a three-way main effects ANOVA and choose the best main effects ANOVA model for mpg_highway as a function of cylinders, origin, and type for the cars in this set. Comment on which terms should be kept in a model for mpg_highway and why based on Type 3 SS.
+
+```{r}
+aov.cars <-
+  aov(mpg_highway ~ cylinders + origin + type,
+      data = df_cars)
+
+# check variance
+# This does not at all look like equal variance amongst groups. However we will continue as if it was because our teacher told us to.
+par(mfrow = c(1,2)) ; plot(aov.cars, c(1,2))
+
+#based off of the below results, origin is not significant. Lets redefine our model by dropping origin.
+Anova(aov.cars, type = 3)
+```
+
+```{r}
+aov.cars <-
+  aov(mpg_highway ~ cylinders + type,
+      data = df_cars)
+
+#this still does not look like equal variance to me.
+par(mfrow = c(1,2)) ; plot(aov.cars, c(1,2))
+
+summary(aov.cars)
+
+Anova(aov.cars, type = 3)
+```
+
+For the model with just predictors you decided to keep, comment on the significant effects in the model and comment on how much variation in highway fuel efficiency the model describes.
+
+-   Both the number of cylinders and type of car have a significant effect on highway fuel efficiency. With high F values (and low p-values) in both cylinders and type categories, we can say with certainty that our model explains a great deal of the variance in highway fuel efficiency.
+
+b\) Starting with main effects chosen in part (a), find your best ANOVA model by adding in any additional interaction terms that will significantly improve the model. For your final model, comment on the significant effects and variation explained by the model.
+
+-   My final model will be aov.cars_tc. The interaction effect, now that origin is dropped, is significant. It is worth including along with the main effects.
+
+```{r}
+# lets try building another model that has an interaction term but still leaves out origin.
+
+aov.cars_ct <-
+  aov(mpg_highway ~ cylinders * type,
+      data = df_cars)
+
+aov.cars_tc <-
+  aov(mpg_highway ~ cylinders * type,
+      data = df_cars)
+
+#both type 1s and the type 3 test all show significant for both of our main effects and our interaction effect. Awesome!
+summary(aov.cars_ct)
+summary(aov.cars_tc)
+Anova(aov.cars, type = 3)
+```
+
+c\) Comment on any significant group differences through the post-hoc test. What does this tell us about fuel efficiency differences across cylinders, origin, or type groups?
+
+```{r}
+ScheffeTest(aov.cars_tc)
+```
+
+-   The results above show us the following:
+
+    -   $\mu_6 < \mu_4$
+
+        On average a 6-cylinder car's highway milage is 6.17 mpg worse than a car with 4-cylinders.
+
+    -   $\mu_s < \mu_d$
+
+        On average a Sport car's highway mileage is 2.18 mpg worse than a sedans.
+
+    -   There is a significant interaction effect between the following car and cylinder combinations
+
+        -   6:Sedan-4:Sedan
+        -   4:Sports-4:Sedan
+        -   6:Sports-4:Sedan
