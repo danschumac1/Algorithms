@@ -1,6 +1,6 @@
 library(car); library(DescTools); library(MASS)
 
-####################################
+###Anova(aov.cars, type = 3)#################################
 # Review of balanced case
 #####################################
 
