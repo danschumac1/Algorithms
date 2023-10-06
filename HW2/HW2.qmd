@@ -125,7 +125,7 @@ head(df_bupa)
 |               | at least 3 but fewer than 6 drinks.                                               |
 |               |                                                                                   |
 |               | **group 4 :**\                                                                    |
-|               | at 6 but fewer than 9 drinks.                                                     |
+|               | at least 6 but fewer than 9 drinks.                                               |
 |               |                                                                                   |
 |               | **group 5 :**\                                                                    |
 |               | 9 or more drinks.                                                                 |
@@ -162,16 +162,16 @@ Perform post-hoc tests for models in mcv and alkphos.
 ##### MCV Post Hoc
 
 -   $\mu_4 > \mu_1$\
-    *People that drink between 6 and 8 drinks a day have a higher MCV on average than people who have less than 1 drink a day.*
+    *People that drink between 6 and 8 drinks a day have an average MCV of 3.74 higher than people who have less than 1 drink a day.*
 
 -   $\mu_5 > \mu_1$*\
-    People that drink 9 or more drinks a day have a higher MCV on average than people who have less than 1 drink a day.*
+    People that drink 9 or more drinks a day have an average MCV of 3.75 higher than people who have less than 1 drink a day.*
 
 -   $\mu_4 > \mu_2$*\
-    People that drink between 6 and 8 drinks a day have a higher MCV on average than people who 1 or 2 drinks per day.*
+    People that drink between 6 and 8 drinks a day have an average MCV of 2.50 higher than people who 1 or 2 drinks per day.*
 
 -   $\mu_4 > \mu_3$*\
-    People that drink between 6 and 8 drinks a day have a higher MCV on average than people who 3 to 5 drinks per day.*
+    People that drink between 6 and 8 drinks a day have an average MCV of 2.81 higher than people who 3 to 5 drinks per day.*
 
 ```{r}
 ScheffeTest(aov.mcv)
@@ -180,10 +180,10 @@ ScheffeTest(aov.mcv)
 ##### Alkphos Post Hoc
 
 -   $\mu_5 > \mu_2$\
-    *People that drink 9 or more drinks a day have a higher Alkphos on average than people who 1 or 2 drinks per day.*
+    *People that drink 9 or more drinks a day have a 15.22 higher average alkaline phosphatase level than people who 1 or 2 drinks per day.*
 
 -   $\mu_5 > \mu_3$*\
-    People that drink 9 or more drinks a day have a higher Alkphos on average than people who 3 to 5 drinks per day.*
+    People that drink 9 or more drinks a day have a 16.62 higher average alkaline phosphatase level than people who 3 to 5 drinks per day.*
 
 ```{r}
 ScheffeTest(aov.alkphos)
@@ -193,7 +193,7 @@ ScheffeTest(aov.alkphos)
 
 Comment on any similarities or differences you observe from their results.
 
--   *There was no significant difference in means in either the MCV or alkphos test where a group that drank [less]{.underline} when compared to a group that drank more. The significant difference always showed a heavier drinking group with a larger mean than the lighter drinkers.*
+-   *There was never a significant difference in means (in either the MCV or alkphos test) when comparing a group that drank [less]{.underline} to a group that drank [more]{.underline}. The significant difference always showed a heavier drinking group with a larger mean than the lighter drinkers.*
 
 ### Exercise 3
 
@@ -203,13 +203,14 @@ The psychology department at a hypothetical university has been accused of under
 df_psych <- read.csv('psych.csv')
 df_psych$sex <- as.factor(df_psych$sex)
 df_psych$rank <- as.factor(df_psych$rank)
-head(df_psych)
+head(df_psych,22)
 ```
 
 Fit a two-way ANOVA model including sex (F, M) and rank (Assistant, Associate) and the interaction term.
 
 ```{r}
 # Make ANOVA model
+# We have an unbalanced data set. so lets set up Sex based off of rank and rank based off of sex
 aov.psych.sr <- aov(salary ~ sex * rank, data = df_psych)
 aov.psych.rs <- aov(salary ~ rank * sex, data = df_psych)
 
@@ -238,7 +239,7 @@ What do the Type 1 and Type 3 sums of squares tell us about significance of effe
 
 -   *Type 3*
 
-    -   *Tells us that only sex has a significant difference in mean salary.*
+    -   *Tells us that only rank has a significant difference in mean salary.*
 
 *Variation Explained:*
 
@@ -266,7 +267,7 @@ Obtain model diagnostics to validate your Normality assumptions. Choose a final 
 ```{r}
 # I have already checked for Normality above.
 
-# I picked the aov.psych.no_interaction_term as my model because we are primarily concered about the interaction between sex and salary. This is a simpler model because it doesn not include the interaction effect. Simpler is good.
+# I picked the aov.psych.no_interaction_term as my model because we are primarily concered about the interaction between sex and salary. This is a simpler model because it does not include the interaction effect. Simpler is good.
 
 ScheffeTest(aov.psych.no_interaction_term)
 ```
@@ -289,7 +290,7 @@ df_cars$type <- as.factor(df_cars$type)
 head(df_cars)
 
 #our data is unbalanced
-table(df_cars$cylinders);table(df_cars$origin);table(df_cars$type);
+table(df_cars$cylinders);table(df_cars$origin);table(df_cars$type)
 ```
 
 a\) Start with a three-way main effects ANOVA and choose the best main effects ANOVA model for mpg_highway as a function of cylinders, origin, and type for the cars in this set. Comment on which terms should be kept in a model for mpg_highway and why based on Type 3 SS.
@@ -348,14 +349,27 @@ Anova(aov.cars, type = 3)
 c\) Comment on any significant group differences through the post-hoc test. What does this tell us about fuel efficiency differences across cylinders, origin, or type groups?
 
 ```{r}
-ScheffeTest(aov.cars_tc)
+# lets try building another model that has an interaction term but still leaves out origin.
+
+aov.cars_ct <-
+  aov(mpg_highway ~ cylinders * type,
+      data = df_cars)
+
+aov.cars_tc <-
+  aov(mpg_highway ~ cylinders * type,
+      data = df_cars)
+
+#both type 1s and the type 3 test all show significant for both of our main effects and our interaction effect. Awesome!
+summary(aov.cars_ct)
+summary(aov.cars_tc)
+Anova(aov.cars, type = 3)
 ```
 
 -   The results above show us the following:
 
     -   $\mu_6 < \mu_4$
 
-        On average a 6-cylinder car's highway milage is 6.17 mpg worse than a car with 4-cylinders.
+        On average a 6-cylinder car's highway mileage is 6.17 mpg worse than a car with 4-cylinders.
 
     -   $\mu_s < \mu_d$
 

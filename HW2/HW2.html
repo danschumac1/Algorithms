@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Schumacher">
+<meta name="dcterms.date" content="2023-09-20">
+
+<title>HW2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="HW2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="HW2_files/libs/quarto-html/quarto.js"></script>
+<script src="HW2_files/libs/quarto-html/popper.min.js"></script>
+<script src="HW2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="HW2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="HW2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="HW2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="HW2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="HW2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="HW2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">HW2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dan Schumacher </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 20, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ lubridate 1.9.2     ✔ tibble    3.2.1
+✔ purrr     1.0.1     ✔ tidyr     1.3.0
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'MASS'
+
+The following object is masked from 'package:dplyr':
+
+    select</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: carData
+
+Attaching package: 'car'
+
+The following object is masked from 'package:DescTools':
+
+    Recode
+
+The following object is masked from 'package:dplyr':
+
+    recode
+
+The following object is masked from 'package:purrr':
+
+    some</code></pre>
+</div>
+</div>
+<section id="algorithms-1-homework-2" class="level1">
+<h1>Algorithms 1 Homework 2</h1>
+<section id="exercise-1-analysis-of-variance" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-1-analysis-of-variance">Exercise 1: Analysis of Variance</h3>
+<p>The heartbpchol.csv data set contains continuous cholesterol (Cholesterol) and blood pressure status (BP_Status) (category: High/ Normal/ Optimal) for alive patients.<br>
+</p>
+<p>For the heartbpchol data set, consider a one-way ANOVA model to identify differences between group cholesterol means. The normality assumption is reasonable, so you can proceed without testing normality.</p>
+<p>Perform a one-way ANOVA for Cholesterol with BP_Status as the categorical predictor. Comment on statistical significance of BP_Status, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.</p>
+<ul>
+<li><p><em>Set Up</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_hearts <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'heartbpchol.csv'</span>, <span class="at">header =</span> T)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_hearts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Cholesterol BP_Status
+1         221   Optimal
+2         188      High
+3         292      High
+4         319    Normal
+5         205    Normal
+6         247      High</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df_hearts<span class="sc">$</span>BP_Status <span class="ot">=</span> <span class="fu">as.factor</span>(df_hearts<span class="sc">$</span>BP_Status)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_hearts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Cholesterol BP_Status
+1         221   Optimal
+2         188      High
+3         292      High
+4         319    Normal
+5         205    Normal
+6         247      High</code></pre>
+</div>
+</div></li>
+<li><p><em>Is our data balanced?</em></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># it isn't balanced but the tests stay the same for 1-way ANOVA</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df_hearts<span class="sc">$</span>BP_Status) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   High  Normal Optimal 
+    229     245      67 </code></pre>
+</div>
+</div>
+<ul>
+<li><p><em>Assumptions of ANOVA</em></p>
+<ul>
+<li><p><del><em>Variable types:</em></del> <em>1 quantitative, 1 qualitative</em></p></li>
+<li><p><em>I<del>ndependence:</del> representative random sample</em></p></li>
+<li><p><del><em>Normality</em></del><em>: We are told in the instructions to trust (normal qqplot looked good)</em></p></li>
+<li><p><del><em>Equal Variances</em></del><em>: We will test with a box plot and3 (passed with Levene</em></p></li>
+</ul></li>
+<li><p><u><em>ANOVA Hypothesis</em></u></p>
+<p><em>H0:</em> <span class="math inline">\(\mu_H = \mu_N = \mu_O\)</span></p>
+<p><em>Halt: @ least 1 not equal.</em></p></li>
+<li><p><em>with Levene’s p-val of 0.8332 we cannot reject Levene’s H0: Equal variance amongst groups</em></p></li>
+<li><p><em>With an ANOVA p-value of .00137, we can reject H0, and accept Halt: At least one group has a different mean.</em></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The Variance looks pretty equal, Optimal is a little smaller.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(Cholesterol <span class="sc">~</span> BP_Status, <span class="at">data =</span> df_hearts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># what does this step do?</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># we use the anova model before verify assumptions to take advantage of the LT test</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># this generates anova output</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>aov.hearts <span class="ot">=</span> <span class="fu">aov</span>(Cholesterol <span class="sc">~</span> BP_Status, <span class="at">data =</span> df_hearts)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># tests for equal var (use for 1-way ANOVA or 2-way Balanced*** maybe)</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># p-val = 0.8332 can't reject H0: Equal variance amongst groups</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">LeveneTest</span>(aov.hearts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+       Df F value Pr(&gt;F)
+group   2  0.1825 0.8332
+      538               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># visually test equal var Larger than 2 way just use visual</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(aov.hearts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-4-5.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now we can interpret aov results</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># with a p-val .00137 we reject H0 and accept Halt: at least 1 group has ***</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.hearts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df  Sum Sq Mean Sq F value  Pr(&gt;F)   
+BP_Status     2   25211   12605   6.671 0.00137 **
+Residuals   538 1016631    1890                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Comment on any significantly different cholesterol means as determined by the post-hoc test comparing all pairwise differences. Specifically explain what that tells us about differences in cholesterol levels across blood pressure status groups, like which group has the highest or lowest mean values of Cholesterol.</p>
+<ul>
+<li><p><span class="math inline">\(\mu_H &gt; \mu_N\)</span> <em>High &gt; Normal</em></p></li>
+<li><p><span class="math inline">\(\mu_H &gt; \mu_O\)</span> <em>High &gt; Optimal</em></p></li>
+<li><p><em>The high blood pressure group has a higher average cholesterol than both the normal and optimal group.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ScheffeTest</span>(aov.hearts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Posthoc multiple comparisons of means: Scheffe Test 
+    95% family-wise confidence level
+
+$BP_Status
+                     diff    lwr.ci    upr.ci   pval    
+Normal-High    -11.543481 -21.35092 -1.736038 0.0159 *  
+Optimal-High   -18.646679 -33.46702 -3.826341 0.0089 ** 
+Optimal-Normal  -7.103198 -21.81359  7.607194 0.4958    
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div></li>
+</ul>
+</section>
+<section id="exercise-2-analysis-of-variance" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-2-analysis-of-variance">Exercise 2: Analysis of Variance</h3>
+<p>For this problem use the bupa.csv data set. <a href="http://archive.ics.uci.edu/ml/datasets/Liver+Disorders">Check UCI Machine Learning Repository</a> for more information. The mean corpuscular volume and alkaline phosphates are blood tests thought to be sensitive to liver disorder related to excessive alcohol consumption. We assume that normality and independence assumptions are valid.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_bupa <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'bupa.csv'</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_bupa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  mcv alkphos drinkgroup
+1  85      92          1
+2  85      64          1
+3  86      54          1
+4  91      78          1
+5  87      70          1
+6  98      55          1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#change drinkgroup to factor var</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df_bupa<span class="sc">$</span>drinkgroup <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_bupa<span class="sc">$</span>drinkgroup)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_bupa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  mcv alkphos drinkgroup
+1  85      92          1
+2  85      64          1
+3  86      54          1
+4  91      78          1
+5  87      70          1
+6  98      55          1</code></pre>
+</div>
+</div>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 84%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mcv</td>
+<td>mean corpuscular volume</td>
+</tr>
+<tr class="even">
+<td>alkphos</td>
+<td>alkaline phosphatase</td>
+</tr>
+<tr class="odd">
+<td>drinkgroup</td>
+<td><p>categorization of the half-pint equivalents of alcoholic beverages drunk per day:</p>
+<p><strong>group 1 :</strong><br>
+less than 1 drink.</p>
+<p><strong>group 2 :</strong><br>
+at least 1 but fewer than 3 drinks.</p>
+<p><strong>group 3 :</strong><br>
+at least 3 but fewer than 6 drinks.</p>
+<p><strong>group 4 :</strong><br>
+at least 6 but fewer than 9 drinks.</p>
+<p><strong>group 5 :</strong><br>
+9 or more drinks.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Perform a one-way ANOVA for mcv as a function of drinkgroup. Comment on significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.</p>
+<ul>
+<li><p><em>with Levene’s p-val of .87 we cannot reject Levene’s H0: Equal variance amongst groups</em></p></li>
+<li><p><em>With an ANOVA p-value of 7.43e-08, we can reject H0, and accept Halt: At least one group has a different mean.</em></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>aov.mcv <span class="ot">=</span> <span class="fu">aov</span>(mcv <span class="sc">~</span> drinkgroup , <span class="at">data =</span> df_bupa)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">LeveneTest</span>(aov.mcv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+       Df F value Pr(&gt;F)
+group   4  0.3053 0.8744
+      340               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.mcv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+drinkgroup    4    733  183.29   10.26 7.43e-08 ***
+Residuals   340   6073   17.86                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Perform a one-way ANOVA for alkphos as a function of drinkgroup. Comment on statistical significance of the drinkgroup, the amount of variation described by the model, and whether or not the equal variance assumption can be trusted.</p>
+<ul>
+<li><p><em>With Levene’s p-val of .52 we cannot reject Levene’s H0: Equal variance amongst groups</em></p></li>
+<li><p><em>With an ANOVA p-val of .00495, we can reject H0 and accept Halt: At least one group has a different mean.</em></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>aov.alkphos <span class="ot">=</span> <span class="fu">aov</span>(alkphos <span class="sc">~</span> drinkgroup , <span class="at">data =</span> df_bupa)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">LeveneTest</span>(aov.alkphos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+       Df F value Pr(&gt;F)
+group   4  0.8089 0.5201
+      340               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.alkphos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+drinkgroup    4   4946  1236.4   3.792 0.00495 **
+Residuals   340 110858   326.1                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<section id="post-hoc" class="level4">
+<h4 class="anchored" data-anchor-id="post-hoc">Post Hoc</h4>
+<p>Perform post-hoc tests for models in mcv and alkphos.</p>
+<section id="mcv-post-hoc" class="level5">
+<h5 class="anchored" data-anchor-id="mcv-post-hoc">MCV Post Hoc</h5>
+<ul>
+<li><p><span class="math inline">\(\mu_4 &gt; \mu_1\)</span><br>
+<em>People that drink between 6 and 8 drinks a day have an average MCV of 3.74 higher than people who have less than 1 drink a day.</em></p></li>
+<li><p><span class="math inline">\(\mu_5 &gt; \mu_1\)</span><em><br>
+People that drink 9 or more drinks a day have an average MCV of 3.75 higher than people who have less than 1 drink a day.</em></p></li>
+<li><p><span class="math inline">\(\mu_4 &gt; \mu_2\)</span><em><br>
+People that drink between 6 and 8 drinks a day have an average MCV of 2.50 higher than people who 1 or 2 drinks per day.</em></p></li>
+<li><p><span class="math inline">\(\mu_4 &gt; \mu_3\)</span><em><br>
+People that drink between 6 and 8 drinks a day have an average MCV of 2.81 higher than people who 3 to 5 drinks per day.</em></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ScheffeTest</span>(aov.mcv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Posthoc multiple comparisons of means: Scheffe Test 
+    95% family-wise confidence level
+
+$drinkgroup
+            diff      lwr.ci   upr.ci    pval    
+2-1  1.241452991 -0.94020481 3.423111  0.5410    
+3-1  0.938131313 -0.90892674 2.785189  0.6495    
+4-1  3.744610282  1.73913894 5.750082 1.9e-06 ***
+5-1  3.746031746  0.64379565 6.848268  0.0081 ** 
+3-2 -0.303321678 -2.59291786 1.986275  0.9966    
+4-2  2.503157290  0.08395442 4.922360  0.0380 *  
+5-2  2.504578755 -0.87987039 5.889028  0.2646    
+4-3  2.806478969  0.68408993 4.928868  0.0025 ** 
+5-3  2.807900433 -0.37116998 5.986971  0.1151    
+5-4  0.001421464 -3.27222796 3.275071  1.0000    
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="alkphos-post-hoc" class="level5">
+<h5 class="anchored" data-anchor-id="alkphos-post-hoc">Alkphos Post Hoc</h5>
+<ul>
+<li><p><span class="math inline">\(\mu_5 &gt; \mu_2\)</span><br>
+<em>People that drink 9 or more drinks a day have a 15.22 higher average alkaline phosphatase level than people who 1 or 2 drinks per day.</em></p></li>
+<li><p><span class="math inline">\(\mu_5 &gt; \mu_3\)</span><em><br>
+People that drink 9 or more drinks a day have a 16.62 higher average alkaline phosphatase level than people who 3 to 5 drinks per day.</em></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ScheffeTest</span>(aov.alkphos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Posthoc multiple comparisons of means: Scheffe Test 
+    95% family-wise confidence level
+
+$drinkgroup
+         diff      lwr.ci    upr.ci   pval    
+2-1 -2.645299 -11.9663647  6.675766 0.9419    
+3-1 -4.056138 -11.9476367  3.835360 0.6389    
+4-1 -1.148743  -9.7170578  7.419571 0.9965    
+5-1 12.572650  -0.6815582 25.826857 0.0734 .  
+3-2 -1.410839 -11.1930681  8.371390 0.9953    
+4-2  1.496556  -8.8394138 11.832525 0.9952    
+5-2 15.217949   0.7579944 29.677903 0.0329 *  
+4-3  2.907395  -6.1604467 11.975236 0.9117    
+5-3 16.628788   3.0463078 30.211268 0.0069 ** 
+5-4 13.721393  -0.2651729 27.707959 0.0578 .  
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="comparing-mcv-and-alkphos-post-hocs" class="level5">
+<h5 class="anchored" data-anchor-id="comparing-mcv-and-alkphos-post-hocs">Comparing MCV and Alkphos Post Hocs</h5>
+<p>Comment on any similarities or differences you observe from their results.</p>
+<ul>
+<li><em>There was never a significant difference in means (in either the MCV or alkphos test) when comparing a group that drank <u>less</u> to a group that drank <u>more</u>. The significant difference always showed a heavier drinking group with a larger mean than the lighter drinkers.</em></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="exercise-3" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-3">Exercise 3</h3>
+<p>The psychology department at a hypothetical university has been accused of underpaying female faculty members. The data represent salary (in thousands of dollars) for all 22 professors in the department. This problem is from Maxwell and Delaney (2004).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df_psych <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'psych.csv'</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>df_psych<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_psych<span class="sc">$</span>sex)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>df_psych<span class="sc">$</span>rank <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_psych<span class="sc">$</span>rank)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_psych,<span class="dv">22</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   sex   rank salary
+1    F Assist     33
+2    F Assist     36
+3    F Assist     35
+4    F Assist     38
+5    F Assist     42
+6    F Assist     37
+7    M Assist     39
+8    M Assist     38
+9    M Assist     40
+10   M Assist     44
+11   F  Assoc     42
+12   F  Assoc     40
+13   F  Assoc     44
+14   F  Assoc     43
+15   M  Assoc     43
+16   M  Assoc     40
+17   M  Assoc     49
+18   M  Assoc     47
+19   M  Assoc     48
+20   M  Assoc     51
+21   M  Assoc     48
+22   M  Assoc     45</code></pre>
+</div>
+</div>
+<p>Fit a two-way ANOVA model including sex (F, M) and rank (Assistant, Associate) and the interaction term.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make ANOVA model</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We have an unbalanced data set. so lets set up Sex based off of rank and rank based off of sex</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>aov.psych.sr <span class="ot">&lt;-</span> <span class="fu">aov</span>(salary <span class="sc">~</span> sex <span class="sc">*</span> rank, <span class="at">data =</span> df_psych)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>aov.psych.rs <span class="ot">&lt;-</span> <span class="fu">aov</span>(salary <span class="sc">~</span> rank <span class="sc">*</span> sex, <span class="at">data =</span> df_psych)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Check for Variance with 2-way, just use visual</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)) ; <span class="fu">plot</span>(aov.psych.sr, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)) ; <span class="fu">plot</span>(aov.psych.rs, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#looks good!</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co"># These are Type 1 tests sr = sex -&gt; rank. rs is reverse</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.psych.sr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+sex          1 155.15  155.15  17.007 0.000637 ***
+rank         1 169.82  169.82  18.616 0.000417 ***
+sex:rank     1   0.63    0.63   0.069 0.795101    
+Residuals   18 164.21    9.12                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.psych.rs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+rank         1 252.22  252.22  27.647 5.33e-05 ***
+sex          1  72.76   72.76   7.975   0.0112 *  
+rank:sex     1   0.63    0.63   0.069   0.7951    
+Residuals   18 164.21    9.12                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(aov.psych.rs, <span class="at">type =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type III tests)
+
+Response: salary
+            Sum Sq Df  F value  Pr(&gt;F)    
+(Intercept) 8140.2  1 892.2994 &lt; 2e-16 ***
+rank          70.4  1   7.7189 0.01240 *  
+sex           28.0  1   3.0711 0.09671 .  
+rank:sex       0.6  1   0.0695 0.79510    
+Residuals    164.2 18                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>What do the Type 1 and Type 3 sums of squares tell us about significance of effects? Is the interaction between sex and rank significant? Also comment on the variation explained by the model.</p>
+<p><em>I ran the following tests and got the following results:</em></p>
+<ul>
+<li><p><em>Type 1 sex * rank</em></p>
+<ul>
+<li><em>Tells us that there is a significant difference in mean salary based on both rank and sex not off the interaction effect of the two.</em></li>
+</ul></li>
+<li><p><em>Type 1 rank * sex</em></p>
+<ul>
+<li><em>Tells us the same as above ^^^</em></li>
+</ul></li>
+<li><p><em>Type 3</em></p>
+<ul>
+<li><em>Tells us that only rank has a significant difference in mean salary.</em></li>
+</ul></li>
+</ul>
+<p><em>Variation Explained:</em></p>
+<ul>
+<li><em>All of the tests above had a high f-value for rank. And both the Type 1 tests had a high f-value for sex. This means that our model explains the variance extremely well in those cases.</em></li>
+</ul>
+<p>Refit the model without the interaction term.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>aov.psych.no_interaction_term <span class="ot">&lt;-</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aov</span>(salary <span class="sc">~</span> sex <span class="sc">+</span> rank, <span class="at">data =</span> df_psych)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.psych.no_interaction_term)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+sex          1  155.2  155.15   17.88 0.000454 ***
+rank         1  169.8  169.82   19.57 0.000291 ***
+Residuals   19  164.8    8.68                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(aov.psych.no_interaction_term, <span class="at">type =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type III tests)
+
+Response: salary
+             Sum Sq Df   F value    Pr(&gt;F)    
+(Intercept) 10227.6  1 1178.8469 &lt; 2.2e-16 ***
+sex            72.8  1    8.3862 0.0092618 ** 
+rank          169.8  1   19.5743 0.0002912 ***
+Residuals     164.8 19                        
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Comment on the significance of effects and variation explained. Report and interpret the Type 1 and Type 3 tests of the main effects. Are the main effects of rank and sex significant?</p>
+<ul>
+<li><em>Type 1</em>
+<ul>
+<li><em>Tells us that there is a significant difference in mean salary based on both rank and sex.</em></li>
+</ul></li>
+<li><em>Type 3</em>
+<ul>
+<li><em>Tells us the same as above ^^^</em></li>
+</ul></li>
+</ul>
+<p>Obtain model diagnostics to validate your Normality assumptions. Choose a final model based on your results from parts (a) and (b). Comment on any significant group differences through the post-hoc test.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># I have already checked for Normality above.</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co"># I picked the aov.psych.no_interaction_term as my model because we are primarily concered about the interaction between sex and salary. This is a simpler model because it does not include the interaction effect. Simpler is good.</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ScheffeTest</span>(aov.psych.no_interaction_term)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Posthoc multiple comparisons of means: Scheffe Test 
+    95% family-wise confidence level
+
+$sex
+        diff   lwr.ci   upr.ci   pval    
+M-F 5.333333 1.986138 8.680529 0.0018 ** 
+
+$rank
+                 diff   lwr.ci   upr.ci   pval    
+Assoc-Assist 5.377778 2.030582 8.724973 0.0017 ** 
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>State the differences in salary across different main effect groups and interaction (if included) between them.</p>
+<ul>
+<li><p>Males make $5,340 more on average than females.</p></li>
+<li><p>Associates make $5,378 more on average than assistants</p></li>
+</ul>
+</section>
+<section id="exercise-4" class="level3">
+<h3 class="anchored" data-anchor-id="exercise-4">Exercise 4</h3>
+<section id="set-up" class="level5">
+<h5 class="anchored" data-anchor-id="set-up">Set Up</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>df_cars <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'cars_new.csv'</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>df_cars<span class="sc">$</span>cylinders <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_cars<span class="sc">$</span>cylinders)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>df_cars<span class="sc">$</span>origin <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_cars<span class="sc">$</span>origin)</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>df_cars<span class="sc">$</span>type <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_cars<span class="sc">$</span>type)</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_cars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    type origin cylinders mpg_highway
+1  Sedan   Asia         4          31
+2  Sedan   Asia         4          29
+3  Sedan   Asia         6          28
+4  Sedan   Asia         6          24
+5  Sedan   Asia         6          24
+6 Sports   Asia         6          24</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">#our data is unbalanced</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df_cars<span class="sc">$</span>cylinders);<span class="fu">table</span>(df_cars<span class="sc">$</span>origin);<span class="fu">table</span>(df_cars<span class="sc">$</span>type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 4  6 
+86 94 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Asia  USA 
+ 104   76 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Sedan Sports 
+   164     16 </code></pre>
+</div>
+</div>
+<p>a) Start with a three-way main effects ANOVA and choose the best main effects ANOVA model for mpg_highway as a function of cylinders, origin, and type for the cars in this set. Comment on which terms should be kept in a model for mpg_highway and why based on Type 3 SS.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>aov.cars <span class="ot">&lt;-</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aov</span>(mpg_highway <span class="sc">~</span> cylinders <span class="sc">+</span> origin <span class="sc">+</span> type,</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df_cars)</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="co"># check variance</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="co"># This does not at all look like equal variance amongst groups. However we will continue as if it was because our teacher told us to.</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)) ; <span class="fu">plot</span>(aov.cars, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co">#based off of the below results, origin is not significant. Lets redefine our model by dropping origin.</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(aov.cars, <span class="at">type =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type III tests)
+
+Response: mpg_highway
+            Sum Sq  Df   F value  Pr(&gt;F)    
+(Intercept)  69548   1 6501.6715 &lt; 2e-16 ***
+cylinders     1453   1  135.8499 &lt; 2e-16 ***
+origin           1   1    0.0786 0.77948    
+type           108   1   10.1018 0.00175 ** 
+Residuals     1883 176                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>aov.cars <span class="ot">&lt;-</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aov</span>(mpg_highway <span class="sc">~</span> cylinders <span class="sc">+</span> type,</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df_cars)</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="co">#this still does not look like equal variance to me.</span></span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)) ; <span class="fu">plot</span>(aov.cars, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="HW2_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.cars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+cylinders     1 1470.8  1470.8  138.22 &lt; 2e-16 ***
+type          1  115.8   115.8   10.88 0.00117 ** 
+Residuals   177 1883.5    10.6                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(aov.cars, <span class="at">type =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type III tests)
+
+Response: mpg_highway
+            Sum Sq  Df F value    Pr(&gt;F)    
+(Intercept)  88449   1 8311.96 &lt; 2.2e-16 ***
+cylinders     1482   1  139.27 &lt; 2.2e-16 ***
+type           116   1   10.88  0.001175 ** 
+Residuals     1883 177                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>For the model with just predictors you decided to keep, comment on the significant effects in the model and comment on how much variation in highway fuel efficiency the model describes.</p>
+<ul>
+<li>Both the number of cylinders and type of car have a significant effect on highway fuel efficiency. With high F values (and low p-values) in both cylinders and type categories, we can say with certainty that our model explains a great deal of the variance in highway fuel efficiency.</li>
+</ul>
+<p>b) Starting with main effects chosen in part (a), find your best ANOVA model by adding in any additional interaction terms that will significantly improve the model. For your final model, comment on the significant effects and variation explained by the model.</p>
+<ul>
+<li>My final model will be aov.cars_tc. The interaction effect, now that origin is dropped, is significant. It is worth including along with the main effects.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lets try building another model that has an interaction term but still leaves out origin.</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>aov.cars_ct <span class="ot">&lt;-</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aov</span>(mpg_highway <span class="sc">~</span> cylinders <span class="sc">*</span> type,</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df_cars)</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>aov.cars_tc <span class="ot">&lt;-</span></span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aov</span>(mpg_highway <span class="sc">~</span> cylinders <span class="sc">*</span> type,</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df_cars)</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="co">#both type 1s and the type 3 test all show significant for both of our main effects and our interaction effect. Awesome!</span></span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.cars_ct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+cylinders        1 1470.8  1470.8 143.839 &lt; 2e-16 ***
+type             1  115.8   115.8  11.323 0.00094 ***
+cylinders:type   1   83.9    83.9   8.201 0.00470 ** 
+Residuals      176 1799.6    10.2                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov.cars_tc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+cylinders        1 1470.8  1470.8 143.839 &lt; 2e-16 ***
+type             1  115.8   115.8  11.323 0.00094 ***
+cylinders:type   1   83.9    83.9   8.201 0.00470 ** 
+Residuals      176 1799.6    10.2                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(aov.cars, <span class="at">type =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type III tests)
+
+Response: mpg_highway
+            Sum Sq  Df F value    Pr(&gt;F)    
+(Intercept)  88449   1 8311.96 &lt; 2.2e-16 ***
+cylinders     1482   1  139.27 &lt; 2.2e-16 ***
+type           116   1   10.88  0.001175 ** 
+Residuals     1883 177                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>c) Comment on any significant group differences through the post-hoc test. What does this tell us about fuel efficiency differences across cylinders, origin, or type groups?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ScheffeTest</span>(aov.cars_tc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Posthoc multiple comparisons of means: Scheffe Test 
+    95% family-wise confidence level
+
+$cylinders
+         diff    lwr.ci    upr.ci   pval    
+6-4 -5.722662 -7.069542 -4.375783 &lt;2e-16 ***
+
+$type
+                  diff    lwr.ci     upr.ci   pval    
+Sports-Sedan -2.817931 -5.181999 -0.4538626 0.0117 *  
+
+$`cylinders:type`
+                        diff    lwr.ci    upr.ci    pval    
+6:Sedan-4:Sedan   -6.1723315 -7.583670 -4.760993 &lt; 2e-16 ***
+4:Sports-4:Sedan  -5.2275641 -8.578473 -1.876655 0.00036 ***
+6:Sports-4:Sedan  -6.6025641 -9.953473 -3.251655 2.7e-06 ***
+4:Sports-6:Sedan   0.9447674 -2.391611  4.281146 0.88732    
+6:Sports-6:Sedan  -0.4302326 -3.766611  2.906146 0.98763    
+6:Sports-4:Sports -1.3750000 -5.888107  3.138107 0.86373    
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<ul>
+<li><p>The results above show us the following:</p>
+<ul>
+<li><p><span class="math inline">\(\mu_6 &lt; \mu_4\)</span></p>
+<p>On average a 6-cylinder car’s highway mileage is 6.17 mpg worse than a car with 4-cylinders.</p></li>
+<li><p><span class="math inline">\(\mu_s &lt; \mu_d\)</span></p>
+<p>On average a Sport car’s highway mileage is 2.18 mpg worse than a sedans.</p></li>
+<li><p>There is a significant interaction effect between the following car and cylinder combinations</p>
+<ul>
+<li>6:Sedan-4:Sedan</li>
+<li>4:Sports-4:Sedan</li>
+<li>6:Sports-4:Sedan</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
