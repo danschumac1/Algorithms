@@ -66,6 +66,8 @@ lm_heart_rm <-
 
 Comment on the significance of the parameters
 
+-   Our overall p is less than .05 and our Weight-p is less than .05. Both are significant.
+
 ```{r}
 summary(lm_heart_rm)
 ```
@@ -99,7 +101,7 @@ What does this model tell us about the relationship between Cholesterol and Weig
 
 Explain to the medical director whether this is a good model for predicting Cholesterol levels.
 
--   While our model is significant (low p-val) and proves that there is a linear relationship between Cholesterol and Weight, with such a low ${R}^2$, I think that there are better models out there!
+-   While our model is significant (low p-val) and proves that there is a linear relationship between Cholesterol and Weight, with such a low ${R}^2$, I think that there are better models out there especially if the director is interested in predictive power!
 
 ## Exercise 2:
 
