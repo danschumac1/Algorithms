@@ -1,0 +1,256 @@
+---
+title: "Homework 3"
+author: "Dan Schumacher, hdd249"
+format: html
+editor: visual
+---
+
+```{r}
+#| include: False
+library(ggplot2)
+library(dplyr)
+library(MASS)
+library(car)
+library(olsrr)
+```
+
+# Algorithms Homework 3
+
+## Exercise 1:
+
+The medical director at your company wants to know if Weight alone can predict Cholesterol outcomes. Consider modeling Cholesterol as a function of Weight.
+
+### a)
+
+Fit a linear regression model for Cholesterol as a function of Weight. If any points are unduly influential, note those points, then remove them and refit the model. Consider Cook's distance cut-off to be 0.015.
+
+*Unduly influential points are point 23 and points 210 (shout out to San Antonio's area code!)*
+
+```{r}
+#set up data
+df_heart <- 
+  read.csv('./data/heart.csv')
+
+# fit linear model
+lm_heart <- 
+  lm(
+    formula = Cholesterol ~ Weight,
+     data = df_heart
+    )
+
+#diagnostics plot
+par(mfrow = c(2,2))
+plot(lm_heart, which = c(1:4))
+
+# find influential points
+inf.id <-
+  which(
+    cooks.distance(
+      lm_heart)>0.015
+    )
+
+#print unduly influential points
+print(
+  df_heart[inf.id,]
+  )
+
+#remove those points and refit model
+lm_heart_rm <-
+  lm(
+    formula = Cholesterol ~ Weight,
+    data = df_heart[-inf.id,]
+  )
+```
+
+### b)
+
+Comment on the significance of the parameters
+
+```{r}
+summary(lm_heart_rm)
+```
+
+-   variation explained by the model
+
+    -   with an ${R}^2$ (rounded to) .006, our model can only explain .6% of the variation.
+
+-   any remaining issues noted in the diagnostics plots
+
+```         
+-   **Residuals vs Fitted plot**: we want it to be random and centered roughly around 0. Looks good to me
+
+-   **Q-Q plot**: it follows the line pretty well! Although there is a slight curve toward the end, I don't think it is steep enough to discount our findings
+
+-   **Scale-Location**: Most of our residuals fall below 1.5 which supports normality. However a good number also fall above that line. This could be a concern.
+
+-   **Cook's Distance**: we fixed this already
+```
+
+```{r}
+par(mfrow = c(2,2))
+plot(lm_heart_rm, which = c(1:4))
+```
+
+What does this model tell us about the relationship between Cholesterol and Weight? Interpret the relationship specifically.
+
+-   Our model tells us that for every unit increase in weight, cholesterol goes up by .123.
+
+-   Cholesterol = .123(weight) + 203.58
+
+Explain to the medical director whether this is a good model for predicting Cholesterol levels.
+
+-   While our model is significant (low p-val) and proves that there is a linear relationship between Cholesterol and Weight, with such a low ${R}^2$, I think that there are better models out there!
+
+## Exercise 2:
+
+The medical director wants to know if blood pressure and weight can better predict cholesterol outcomes. Consider modeling cholesterol as a function of diastolic, systolic, and weight.
+
+### a)
+
+Fit a linear regression model for cholesterol as a function of diastolic, systolic, and weight.
+
+```{r}
+# fit linear model
+lm_heart_mult <- 
+  lm(
+    formula = Cholesterol ~ .,
+     data = df_heart
+    )
+```
+
+Generate the diagnostics plots and comment on any issues that need to be noted. For Cook's distances, do not leave any points that have Cook's distance greater than 0.015.
+
+-   **QQ Plot**: There is a slight upward bend like before. but I don't think it is an issue.
+
+```{r}
+# find influential points
+inf.id <-
+  which(
+    cooks.distance(lm_heart_mult) > 0.015
+    )
+
+#print unduly influential points
+print(
+  df_heart[inf.id,]
+  )
+
+#remove those points and refit model
+lm_heart_mult_rm <-
+  lm(
+    formula = Cholesterol ~ .,
+    data = df_heart[-inf.id, ]
+  )
+
+#diagnostics plots
+par(mfrow = c(2,2))
+plot(lm_heart_mult_rm, which = c(1:4))
+```
+
+### b)
+
+```{r}
+summary(lm_heart_mult_rm)
+```
+
+Comment on the significance of the parameters and how much variation in cholesterol is described by the model.
+
+-   The model as a whole is significant. Diastolic and Systolic are significant.
+
+-   We now have and ${R}^2$ of .038; our model can explain 3.8% of the variance in cholesterol.
+
+Comment on the relationship between cholesterol and statistically significant predictor(s).
+
+-   TO DO THIS WOULD WE NEED TO MAKE A NEW MODEL?
+
+-   Cholesterol = 156.33 + 0.30(Sys) + .25(Dias)
+
+Check multicollinearity issues among predictors.
+
+-   no issues (I'm surprised! I thought that Diastolic and Systolic would be *for sure* correlated)
+
+```{r}
+#if VIF > 10 , 90% of xj can be explained by another statistic.
+# none of our vars are > 10 
+vif(lm_heart_mult_rm)
+```
+
+Explain to the medical director whether this is a good model for predicting Cholesterol levels.
+
+-   This is a much better model for predicting Cholesterol levels than the previous model. Now our model can explain 3.8% of the variance (more than 6x more variance explained). Because Weight is not significant, I would be interested in making one more model that dropped weight before presenting it to the medical director. If it performed worse than this current model, I would argue that while our model isn't good at predicting cholesterol levels, it is still useful to see the relationship between these variables.
+
+## Exercise 3:
+
+Now consider step wise model selection for the Cholesterol model. Before performing the model selection, we remove influential points detected in Exercise 2, which have a cook's distance larger than 0.015.
+
+### a)
+
+```{r}
+#here is our data without the influential points
+df_heart_rm <- 
+  df_heart[-inf.id, ]
+```
+
+Perform step wise model selection with .05 criteria and address any issues in diagnostics plots.
+
+-   I don't see any issues in the diagnostics plots
+
+```{r}
+# stepwise selection
+model.stepwise <- ols_step_both_p(lm_heart_mult_rm, pent = .05, prem = .05, details = F)
+print(model.stepwise)
+plot(model.stepwise)
+
+# reform model based off of ^^^
+step_model <-
+  lm(Cholesterol ~ Systolic + Diastolic, data = df_heart_rm)
+
+# diagnostics plot
+par(mfrow = c(2,2))
+plot(lm_heart_mult_rm, which = c(1:4))
+```
+
+### b)
+
+Interpret the final model and comment on the variation in Cholesterol explained. Compare the variations explained by the models from Exercises 1 and 2.
+
+-   Our final model has an ${R}^2$ of .0358; this means that our model can explain 3.58% of the variance in Cholesterol. This is, again, about six times the amount of explained variation compared to Ex. 1, but compared to Ex. 2 it is a little bit less. However, all of our features this time are significant which, although it weakens the predictive power of our model, helps interpret-ability.
+
+## Exercise 4:
+
+Now consider the best subset selection for the Cholesterol model. Again, we remove influential points detected in Exercise 2, which has a cook's distance larger than 0.015, before performing the model selection.
+
+### a)
+
+```{r}
+# stepwise selection
+model.best.subset <- ols_step_best_subset(lm_heart_mult_rm)
+model.best.subset
+
+# reform model based off of ^^^
+# step_model <-
+#   lm(Cholesterol ~ Systolic + Diastolic, data = df_heart_rm)
+# 
+# # diagnostics plot
+# par(mfrow = c(2,2))
+# plot(lm_heart_mult_rm, which = c(1:4))
+```
+
+Find the best model based on adjusted-R square criteria and specify which predictors are selected.
+
+-   Model 2 (Diastolic Systolic)
+
+### b)
+
+Find the best model based on AIC criteria and specify which predictors are selected.
+
+-   Model 2 (Diastolic Systolic)
+
+### c)
+
+Compare the final models selected in a) and b).
+
+-   They are the same!
+
+Also, compare the final models from the best subset approach with the final model from the step wise selection.
+
+-   They are the same!\
