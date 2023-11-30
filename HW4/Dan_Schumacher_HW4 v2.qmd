@@ -1,0 +1,745 @@
+---
+title: "HW4"
+author: "Dan Schumacher"
+format: html
+html: 
+  page-layout: full
+editor: visual
+---
+
+# Algorithms, Homework 4
+
+We use significance level alpha=0.1 in HW4
+
+```{r}
+#| label : 'set up'
+#| include : false
+
+library(dplyr)
+library(ggplot2)
+library(olsrr)
+library(DescTools)
+library(ResourceSelection)
+
+df_liver <- 
+  read.csv('./data/liver-1.csv')
+
+df_sleep <- 
+  read.csv('./data/sleep-1.csv')
+
+```
+
+## Exercise 1:
+
+The liver data set is a subset of the ILPD (Indian Liver Patient Dataset) data set. It contains the first 10 variables described on the UCI Machine Learning Repository and a LiverPatient variable (indicating whether or not the individual is a liver patient. People with active liver disease are coded as LiverPatient=1 and people without disease are coded LiverPatient=0) for adults in the data set. Adults here are defined to be individuals who are at least 18 years of age. It is possible that there will be different significant predictors of being a liver patient for adult females and adult males.
+
+### a)
+
+For only females in the data set, find and specify the best set of predictors via step wise selection with AIC criteria for a logistic regression model predicting whether a female is a liver patient.
+
+```{r}
+# Make it just Female
+df_female_liver =
+  df_liver %>% 
+    filter(
+      Gender == 'Female'
+    ) 
+
+# drop gender var
+df_female_liver <-
+  subset(
+    df_female_liver,
+    select = -Gender
+  )
+
+# Define empty and full model
+model.null = 
+  glm(
+    LiverPatient ~ 1,
+    data = df_female_liver,
+    family = binomial
+    )
+model.full = 
+  glm(
+    LiverPatient ~ .,
+    data = df_female_liver,
+    family = binomial
+    )
+
+#Dr. P's stepwise AIC
+step.models.AIC = 
+  step(
+    model.null,
+    scope = list(upper = model.full),
+    direction = 'both',
+    test = 'Chisq',
+    trace = F
+  )
+
+# Save and load to automate
+saveRDS(
+  step.models.AIC,
+  file = "./models/final_female.rds"
+  )
+
+final_female <- 
+  readRDS("./models/final_female.rds")
+
+print(
+  summary(final_female)
+  )
+```
+
+### b)
+
+Comment on the significance of parameter estimates under significance level alpha=0.1.
+
+-   **At alpha = .1, both DB and Aspartate are significant.**
+
+What does HosmerLemeshow's test tell us about goodness of fit?
+
+```{r}
+# HosmerLemeshow's test 
+hoslem.test(
+  final_female$y,
+  fitted(final_female),
+  g=10
+  ) 
+```
+
+-   **HosmerLemoeshow's H0: GOF adequate \|\|\| Halt: GOF inadequate. With a p val of .4579 we fail to reject H0 and conclude that the GOF is adequate.**
+
+Point out any issues with diagnostics by checking residual plots and cook's distance plot (with cut-off 0.25).
+
+```{r}
+#debugging
+final_female$model$esr
+```
+
+```{r}
+
+dev.new(
+  width = 1000,
+  height = 1000,
+  unit = "px"
+  )
+
+par(mfrow=c(1,2))
+
+# standardized deviance residuals
+resid.d <- residuals(
+  final_female,
+  type = "deviance"
+  )
+
+std.res.d <- residuals(
+  final_female,
+  type = "deviance"
+  )/
+  sqrt(1 - hatvalues(final_female))
+
+plot(
+  std.res.d[final_female$model$LiverPatient==0],
+  col = "red",
+  ylim = range(std.res.d, na.rm = T),
+  ylab = "std. deviance residuals",
+  xlab = "ID"
+  )
+
+points(
+  std.res.d[final_female$model$LiverPatient==1],
+  col = "blue"
+  )
+
+# standardized pearson residuals
+resid.p <- residuals(
+  final_female,
+  type = "pearson"
+  )
+
+std.res.p <- residuals(
+  final_female,
+  type = "pearson"
+  )/
+  sqrt(1 - hatvalues(final_female)) 
+
+plot(
+  std.res.p[final_female$model$LiverPatient==0],
+  col = "red",
+  ylim = range(std.res.p, na.rm = T),
+  ylab = "std. Pearson residuals",
+  xlab = "ID"
+  )
+
+points(
+  std.res.p[final_female$model$LiverPatient==1],
+  col = "blue"
+  )
+
+inf.id <-
+  which(
+    cooks.distance(final_female)>0.25
+    )
+
+#this prints nothing meaning that there aren't any points
+print(
+  df_female_liver[inf.id,]
+  )
+```
+
+-   **There are no points that have a cooks distance larger than .25 (that's good!)**
+
+-   **Diagnostic plots look good!**
+
+### c)
+
+Interpret relationships between predictors in the final model and the odds of an adult female being a liver patient. (based on estimated Odds Ratio).
+
+```{r}
+# FEMALE Grab the odds ratios
+OR = exp(final_female$coefficients)
+
+# these should be the same
+print(
+  round(OR,3)
+  )
+
+print(
+  exp(final_female$coefficients)
+  )
+```
+
+-   **With increase in DB and/or Aspartate, the likelihood of liver disease increases.**
+
+## Exercise 2:
+
+Repeat exercise 1 for males. In addition to the previous questions, also comment on how the models for adult females and adult males differ. Use significance level alpha=0.1
+
+### a)
+
+```{r}
+
+```
+
+```{r}
+# MALE Make it just Male
+df_male_liver =
+  df_liver %>% 
+    filter(
+      Gender == 'Male'
+    ) 
+
+# drop gender var
+df_male_liver <-
+  subset(
+    df_male_liver,
+    select = -Gender
+  )
+
+# Dr. P's notation stepwise selection
+model.null = 
+  glm(
+    LiverPatient ~ 1,
+    data = df_male_liver,
+    family = binomial
+    )
+
+model.full = 
+  glm(
+    LiverPatient ~ .,
+    data = df_male_liver,
+    family = binomial
+    )
+
+# Dr. P's stepwise AIC
+step.models.AIC = 
+  step(
+    model.null,
+    scope = list(upper = model.full),
+    direction = 'both',
+    test = 'Chisq',
+    trace = F
+  )
+
+# Save and load to automate
+saveRDS(
+  step.models.AIC,
+  file = "./models/final_male.rds"
+  )
+final_male <- 
+  readRDS("./models/final_male.rds")
+
+print(
+  summary(final_male)
+)
+```
+
+### b)
+
+Comment on the significance of parameter estimates under significance level alpha=0.1.
+
+-   **At alpha = .1, DB, Alamine, Age, and Alkphos are all significant.**
+
+What does HosmerLemeshow's test tell us about goodness of fit?
+
+```{r}
+# HosmerLemeshow's test 
+hoslem.test(
+  final_male$y,
+  fitted(final_male),
+  g=10
+  ) 
+```
+
+-   **HosmerLemoeshow's H0: GOF adequate \|\|\| Halt: GOF inadequate. With a p val of .532 we fail to reject H0 and conclude that the GOF is adequate.**
+
+Point out any issues with diagnostics by checking residual plots and cook's distance plot (with cut-off 0.25).
+
+```{r}
+dev.new(
+  width = 1000,
+  height = 1000,
+  unit = "px"
+)
+
+par(mfrow=c(1,2))
+
+# standardized deviance residuals
+resid.d <- residuals(
+  final_male,
+  type = "deviance"
+)
+
+std.res.d <- residuals(
+  final_male,
+  type = "deviance"
+) /
+sqrt(1 - hatvalues(final_male))
+
+plot(
+  std.res.d[final_male$model$LiverPatient == 0],
+  col = "red",
+  ylim = range(std.res.d, na.rm = TRUE),
+  ylab = "std. deviance residuals",
+  xlab = "ID"
+)
+
+points(
+  std.res.d[final_male$model$LiverPatient == 1],
+  col = "blue"
+)
+
+# standardized pearson residuals
+resid.p <- residuals(
+  final_male,
+  type = "pearson"
+)
+
+std.res.p <- residuals(
+  final_male,
+  type = "pearson"
+) /
+sqrt(1 - hatvalues(final_male))
+
+plot(
+  std.res.p[final_male$model$LiverPatient == 0],
+  col = "red",
+  ylim = range(std.res.p, na.rm = TRUE),
+  ylab = "std. Pearson residuals",
+  xlab = "ID"
+)
+
+points(
+  std.res.p[final_male$model$LiverPatient == 1],
+  col = "blue"
+)
+
+inf.id <- which(cooks.distance(final_male) > 0.25)
+
+# this prints nothing, meaning that there aren't any points
+print(
+  df_male_liver[inf.id,]
+)
+```
+
+-   We have 1 outlier with a cook's cutoff of .25. Other than that, the diagnostics plots looks good.
+
+### c)
+
+Interpret relationships between predictors in the final model and the odds of an adult female being a liver patient. (based on estimated Odds Ratio)
+
+```{r}
+# MALE Grab the odds ratios
+OR_male = exp(final_male$coefficients)
+
+# these should be the same
+print(
+  round(OR_male, 3)
+)
+
+print(
+  exp(final_male$coefficients)
+)
+```
+
+-   Whenever DB, Alamine, Age, and/or Alkphos increase, the likelihood of the individual being a liver patient increases as well.
+
+### d) Comparing Female & Male Models
+
+-   **Males have twice as many factors in their model than the female equivalent.**
+
+-   **Age and Alkphos don't significantly increase a females likelihood to become a liver patient.**
+
+## Exercise 3:
+
+Use the sleep data set which originates from http://lib.stat.cmu.edu/datasets/sleep.
+
+maxlife10 is 0 if\
+the species maximum life span is less than 10 years\
+1 if\
+its maximum life span is greater than or equal to 10 years.
+
+Consider finding the best logistic model for predicting the probability that a species' maximum lifespan will be at least 10 years.
+
+Consider all 6 variables as candidates (do not include species) and two index variables of them are categorical in nature. Treat two index variables as categorical variables (e.g. ignore the fact that they are ordinal). Use significance level alpha=0.1
+
+### a)
+
+First find and specify the best set of predictors via stepwise selection with BIC criteria.
+
+```{r}
+#experiment
+df_sleep <-
+  df_sleep %>% 
+    mutate(
+      across(
+        c(predationindex, sleepexposureindex),
+        .fns = as.factor
+      )
+    )
+print(
+  class(df_sleep$predationindex)
+)
+```
+
+```{r}
+#get full and null
+model.null = glm(
+  maxlife10 ~ 1,
+  data = df_sleep,
+  family = binomial
+)
+model.full = glm(
+  maxlife10 ~ .,
+  data = df_sleep,
+  family = binomial
+)
+
+#run the BIC
+step.model.BIC <-
+  step(
+    model.null,
+    scope = list(upper = model.full),
+    direction = 'both',
+    test ='Chisq',
+    trace = F,
+    k = log(nrow(df_sleep))
+  )
+
+saveRDS(
+  step.model.BIC,
+  file = "./models/final_sleep.rds"
+  )
+final_sleep <- 
+  readRDS("./models/final_sleep.rds")
+
+print(
+  summary(final_sleep)
+  )
+```
+
+-   The only predictor after step wise BIC selection is brain weight.
+
+### b)
+
+What does Hosmer-Lemeshow's test tells us about goodness of fit?
+
+```{r}
+hoslem.test(
+  final_sleep$y,
+  fitted(final_sleep),
+  g=10
+  ) 
+```
+
+-   **HosmerLemoeshow's H0: GOF adequate \|\|\| Halt: GOF inadequate. With a p val of .961 we fail to reject H0 and conclude that the GOF is adequate.**
+
+Point out any issues with diagnostics by checking residual plots and cook's distance plot. Do not remove influential points but just
+
+make comments on suspicious observations.
+
+```{r}
+dev.new(
+  width = 1000,
+  height = 1000,
+  unit = "px"
+)
+
+par(mfrow=c(1,2))
+
+# standardized deviance residuals
+resid.d <- residuals(
+  final_sleep,
+  type = "deviance"
+)
+
+std.res.d <- residuals(
+  final_sleep,
+  type = "deviance"
+) /
+sqrt(1 - hatvalues(final_sleep))
+
+plot(
+  std.res.d[final_sleep$model$maxlife10 == 0],
+  col = "red",
+  ylim = range(std.res.d, na.rm = TRUE),
+  ylab = "std. deviance residuals",
+  xlab = "ID"
+)
+
+points(
+  std.res.d[final_sleep$model$maxlife10 == 1],
+  col = "blue"
+)
+
+# standardized pearson residuals
+resid.p <- residuals(
+  final_sleep,
+  type = "pearson"
+)
+
+std.res.p <- residuals(
+  final_sleep,
+  type = "pearson"
+) /
+sqrt(1 - hatvalues(final_sleep))
+
+plot(
+  std.res.p[final_sleep$model$maxlife10 == 0],
+  col = "red",
+  ylim = range(std.res.p, na.rm = TRUE),
+  ylab = "std. Pearson residuals",
+  xlab = "ID"
+)
+
+points(
+  std.res.p[final_sleep$model$maxlife10 == 1],
+  col = "blue"
+)
+
+inf.id <- which(cooks.distance(final_sleep) > 0.25)
+
+# this prints nothing, meaning that there aren't any points
+print(
+  df_sleep[inf.id,]
+)
+
+```
+
+-   **We have one outlier with a cook's cutoff of .25**
+
+-   **diagnostics plots looks good**
+
+### c)
+
+Interpret what the model tells us about relationships between the predictors and the odds of a species'
+
+maximum lifespan being at least 10 years.
+
+```{r}
+# MALE Grab the odds ratios
+OR_sleep = exp(final_sleep$coefficients)
+
+# these should be the same
+print(
+  round(OR_sleep, 3)
+)
+
+print(
+  exp(final_sleep$coefficients)
+)
+```
+
+-   As brain weight increases, the likelihood that a species living at least 10 years also increases.
+
+## Exercise 4:
+
+The index variables in the data set are ordinal, meaning they are categorical and they have a natural ordering. If we treat an index variable as a continuous variable, this will imply a linear change as the index changes. Repeat Exercise 3 a)-c) by treating two index variables as continuous variables.
+
+```{r}
+head(df_sleep)
+```
+
+```{r}
+#change index vars from ordinal to continuous
+df_sleep_cont <- 
+  df_sleep %>% 
+    mutate(
+      across(
+        c(
+          predationindex,
+          sleepexposureindex
+          ),
+        .fns = ~as.numeric(as.character(.))
+          )
+      )
+```
+
+### a)
+
+First find and specify the best set of predictors via stepwise selection with BIC criteria.
+
+```{r}
+#get full and null
+model.null = glm(
+  maxlife10 ~ 1,
+  data = df_sleep_cont,
+  family = binomial
+)
+model.full = glm(
+  maxlife10 ~ .,
+  data = df_sleep_cont,
+  family = binomial
+)
+
+#run the BIC
+step.model.BIC <-
+  step(
+    model.null,
+    scope = list(upper = model.full),
+    direction = 'both',
+    test ='Chisq',
+    trace = F,
+    k = log(nrow(df_sleep_cont))
+  )
+
+saveRDS(
+  step.model.BIC,
+  file = "./models/final_sleep_cont.rds"
+  )
+final_sleep_cont <- 
+  readRDS("./models/final_sleep_cont.rds")
+
+print(
+  summary(final_sleep_cont)
+  )
+```
+
+-   The only predictor after step wise BIC selection is brain weight.
+
+### b)
+
+What does Hosmer-Lemeshow's test tells us about goodness of fit?
+
+```{r}
+hoslem.test(
+  final_sleep_cont$y,
+  fitted(final_sleep),
+  g=10
+  ) 
+```
+
+-   **HosmerLemoeshow's H0: GOF adequate \|\|\| Halt: GOF inadequate. With a p val of .961 we fail to reject H0 and conclude that the GOF is adequate.**
+
+Point out any issues with diagnostics by checking residual plots and cook's distance plot. Do not remove influential points but just
+
+make comments on suspicious observations.
+
+```{r}
+dev.new(
+  width = 1000,
+  height = 1000,
+  unit = "px"
+)
+
+par(mfrow=c(1,2))
+
+# standardized deviance residuals
+resid.d <- residuals(
+  final_sleep_cont,
+  type = "deviance"
+)
+
+std.res.d <- residuals(
+  final_sleep_cont,
+  type = "deviance"
+) /
+sqrt(1 - hatvalues(final_sleep_cont))
+
+plot(
+  std.res.d[final_sleep_cont$model$maxlife10 == 0],
+  col = "red",
+  ylim = range(std.res.d, na.rm = TRUE),
+  ylab = "std. deviance residuals",
+  xlab = "ID"
+)
+
+points(
+  std.res.d[final_sleep_cont$model$maxlife10 == 1],
+  col = "blue"
+)
+
+# standardized pearson residuals
+resid.p <- residuals(
+  final_sleep_cont,
+  type = "pearson"
+)
+
+std.res.p <- residuals(
+  final_sleep_cont,
+  type = "pearson"
+) /
+sqrt(1 - hatvalues(final_sleep_cont))
+
+plot(
+  std.res.p[final_sleep_cont$model$maxlife10 == 0],
+  col = "red",
+  ylim = range(std.res.p, na.rm = TRUE),
+  ylab = "std. Pearson residuals",
+  xlab = "ID"
+)
+
+points(
+  std.res.p[final_sleep_cont$model$maxlife10 == 1],
+  col = "blue"
+)
+
+inf.id <- which(cooks.distance(final_sleep_cont) > 0.25)
+
+# this prints nothing, meaning that there aren't any points
+print(
+  final_sleep_cont[inf.id,]
+  )
+```
+
+```{r}
+print(inf.id)
+```
+
+-   **We have one outlier with a cook's cutoff of .25**
+
+-   **diagnostics plots looks good**
+
+### c)
+
+Interpret what the model tells us about relationships between the predictors and the odds of a species'
+
+maximum lifespan being at least 10 years.
+
+```{r}
+
+```
+
+-   As brain weight increases, the likelihood that a species living at least 10 years also increases.
+
+### 

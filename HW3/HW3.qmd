@@ -45,8 +45,7 @@ plot(lm_heart, which = c(1:4))
 # find influential points
 inf.id <-
   which(
-    cooks.distance(
-      lm_heart)>0.015
+    cooks.distance(lm_heart)>0.015
     )
 
 #print unduly influential points

@@ -1,0 +1,332 @@
+---
+title: "HW4"
+author: "Dan Schumacher"
+format: html
+html: 
+  page-layout: full
+editor: visual
+---
+
+# Algorithms, Homework 4
+
+We use significance level alpha=0.1 in HW4
+
+```{r}
+#| label : 'set up'
+#| include : false
+
+library(dplyr)
+library(ggplot2)
+library(MASS)
+library(DescTools)
+library(ResourceSelection)
+
+df_liver <- 
+  read.csv('./data/liver-1.csv')
+
+df_sleep <- 
+  read.csv('./data/sleep-1.csv')
+
+```
+
+## Exercise 1:
+
+The liver data set is a subset of the ILPD (Indian Liver Patient Dataset) data set. It contains the first 10 variables described on the UCI Machine Learning Repository and a LiverPatient variable (indicating whether or not the individual is a liver patient. People with active liver disease are coded as LiverPatient=1 and people without disease are coded LiverPatient=0) for adults in the data set. Adults here are defined to be individuals who are at least 18 years of age. It is possible that there will be different significant predictors of being a liver patient for adult females and adult males.
+
+### a)
+
+For only females in the data set, find and specify the best set of predictors via step wise selection with AIC criteria for a logistic regression model predicting whether a female is a liver patient.
+
+```{r}
+levels(df_female_liver$TB)
+```
+
+```{r}
+# FEMALE Make it just Female
+df_female_liver =
+  df_liver %>% 
+    filter(
+      Gender == 'Female'
+    ) 
+
+# Make regression object
+logR_female_liver  = 
+  glm(
+    LiverPatient ~ Age + TB + DB + Alkphos + Aspartate + Alamine + ALB + TP,
+    data = df_female_liver,
+    family = "binomial",
+    trace = 0
+  )
+
+#stepwise selection
+logR_female_liver.stepwise <-
+  stepAIC(
+    logR_female_liver,
+    direction = 'both',
+    trace = 0
+  )
+
+# Save and load to automate
+saveRDS(
+  logR_female_liver.stepwise,
+  file = "final_female.rds"
+  )
+final_male <- 
+  readRDS("final_female.rds")
+
+print(
+  summary(final_male)
+  )
+```
+
+### b)
+
+Comment on the significance of parameter estimates under significance level alpha=0.1, what HosmerLemeshow's test tells us about goodness of fit and point out any issues with diagnostics by checking residual plots and cook's distance plot (with cut-off 0.25).
+
+```{r}
+# FEMALE Grab the odds ratios
+OR=exp(final_female$coefficients)
+print(
+  round(OR,3)
+  )
+
+# HosmerLemeshow's test 
+
+hoslem.test(
+  final_male$y,
+  fitted(final_female),
+  g=10
+  ) 
+
+
+
+# Cooks distance
+
+
+```
+
+### c)
+
+Interpret relationships between predictors in the final model and the odds of an adult female being a liver patient. (based on estimated Odds Ratio).
+
+NOTE: stepwise selection with AIC criteria can be performed by default step() function in R.
+
+```{r}
+class(logR_female_liver)
+```
+
+```{r}
+# FEMALE Diagnostics
+# Assuming "Age" is the variable you want on the x-axis
+resid.d <- residuals(logR_female_liver, type = "deviance")
+resid.p <- residuals(logR_female_liver, type = "pearson")
+std.res.d <- residuals(logR_female_liver, type = "deviance") / sqrt(1 - hatvalues(logR_female_liver))  # standardized deviance residuals
+std.res.p <- residuals(logR_female_liver, type = "pearson") / sqrt(1 - hatvalues(logR_female_liver))  # standardized pearson residuals
+
+dev.new(width = 1000, height = 1000, unit = "px")
+par(mfrow = c(1, 2))
+
+# Plot 1: Standardized Deviance Residuals
+plot(
+  std.res.d[df_female_liver$model$LiverPatient == 0],
+  col = "red",
+  ylim = c(-3.5, 3.5),
+  ylab = "std. deviance residuals",
+  xlab = "ID"
+)
+points(
+  std.res.d[df_female_liver$model$LiverPatient == 1],
+  col = "blue"
+)
+
+# Plot 2: Standardized Pearson Residuals
+plot(
+  std.res.p[df_female_liver$model$LiverPatient == 0],
+  col = "red",
+  ylim = c(-3.5, 3.5),
+  ylab = "std. Pearson residuals",
+  xlab = "ID"
+)
+points(
+  std.res.p[df_female_liver$model$LiverPatient == 1],
+  col = "blue"
+)
+
+```
+
+## Exercise 2:
+
+Repeat exercise 1 for males. In addition to the previous questions, also comment on how the models for adult females and adult males differ. Use significance level alpha=0.1
+
+### a)
+
+```{r}
+# Make it all Male
+df_male_liver =
+  df_liver %>% 
+    filter(
+      Gender == 'Male'
+    ) 
+
+# Make regression object
+logR_male_liver  = 
+  glm(
+    LiverPatient ~ Age + TB + DB + Alkphos + Aspartate + Alamine + ALB + TP,
+    data = df_male_liver,
+    family = "binomial"
+  )
+
+# stepwise selection              # might need step(critera = 'AIC', ...)
+logR_male_liver.stepwise <-
+  stepAIC(
+    logR_male_liver,
+    direction = 'both',
+    trace = 0
+  )
+        
+
+# Save and load for automation
+saveRDS(
+  logR_male_liver.stepwise,
+  file = "./models/final_male.rds"
+  )
+final_male <- 
+  readRDS("./models/final_male.rds")
+
+print(
+  summary(final_male)
+  )
+```
+
+### b)
+
+```{r}
+# odds ratios
+OR=exp(final_male$coefficients)
+print(
+  round(OR,3)
+  )
+
+# HosmerLemeshow's test 
+hoslem.test(
+  final_male$y,
+  fitted(final_male),
+  g=10
+  ) 
+```
+
+### c)
+
+```{r}
+resid.d <- residuals(logR_male_liver, type = "deviance")
+resid.p <- residuals(logR_male_liver, type = "pearson")
+std.res.d <- residuals(logR_male_liver, type = "deviance") / sqrt(1 - hatvalues(logR_male_liver))  # standardized deviance residuals
+std.res.p <- residuals(logR_male_liver, type = "pearson") / sqrt(1 - hatvalues(logR_male_liver))  # standardized pearson residuals
+
+dev.new(width = 1000, height = 1000, unit = "px")
+par(mfrow = c(1, 2))
+
+# Plot 1: Standardized Deviance Residuals for Males
+plot(
+  std.res.d[df_male_liver$model$LiverPatient == 0],
+  col = "red",
+  ylim = c(-3.5, 3.5),
+  ylab = "std. deviance residuals",
+  xlab = "ID"
+)
+points(
+  std.res.d[df_male_liver$model$LiverPatient == 1],
+  col = "blue"
+)
+
+# Plot 2: Standardized Pearson Residuals for Males
+plot(
+  std.res.p[df_male_liver$model$LiverPatient == 0],
+  col = "red",
+  ylim = c(-3.5, 3.5),
+  ylab = "std. Pearson residuals",
+  xlab = "ID"
+)
+
+points(
+  std.res.p[df_male_liver$model$LiverPatient == 1],
+  col = "blue"
+)
+
+```
+
+### d)
+
+NOTE: You will get an error message "glm.fit: fitted probabilities numerically 0 or 1 occurred" for this run. Ignore this and use the result for the interpretation. I will explain what this error means in the class.
+
+## Exercise 3:
+
+Use the sleep data set which originates from http://lib.stat.cmu.edu/datasets/sleep.
+
+maxlife10 is 0 if\
+the species maximum life span is less than 10 years\
+1 if\
+its maximum life span is greater than or equal to 10 years.
+
+Consider finding the best logistic model for predicting the probability that a species' maximum lifespan will be at least 10 years.
+
+Consider all 6 variables as candidates (do not include species) and two index variables of them are categorical in nature. Treat two index variables as categorical variables (e.g. ignore the fact that they are ordinal). Use significance level alpha=0.1
+
+```{r}
+logR_sleep = glm(
+    maxlife10  ~ . - species,
+    data = df_sleep,
+    family = "binomial"
+  )
+```
+
+### a)
+
+First find and specify the best set of predictors via stepwise selection with BIC criteria.
+
+```{r}
+logR_sleep <-
+  step(
+    logR_sleep,
+    criteria = 'BIC',
+    Trace = 0,
+    direction = 'both'
+  )
+
+saveRDS(
+  logR_sleep,
+  file = "./models/final_sleep.rds"
+  )
+final_sleep <- 
+  readRDS("./models/final_sleep.rds")
+
+print(
+  summary(final_sleep)
+  )
+```
+
+### b)
+
+What does Hosmer-Lemeshow's test tells us about goodness of fit? And point out any issues with
+
+diagnostics by checking residual plots and cook's distance plot. Do not remove influential points but just
+
+make comments on suspicious observations.
+
+### c)
+
+Interpret what the model tells us about relationships between the predictors and the odds of a species'
+
+maximum lifespan being at least 10 years.
+
+NOTE: stepwise selection with BIC criteria can be performed by step() function by adding an option k=log(n), where n is a sample size. For part (c), interpret the Odds Ratio for all covariates regardless of their significance.
+
+## Exercise 4:
+
+The index variables in the data set are ordinal, meaning they are categorical and they have a natural ordering. If we treat an index variable as a continuous variable, this will imply a linear change as the index changes. Repeat Exercise 3 a)-c) by treating two index variables as continuous variables.
+
+### a)
+
+### b)
+
+### c)
