@@ -13,6 +13,7 @@ pairs(UScrime[,c(1:9,16)], pch = 19) # output in lecture note
 #####################################################################
 drinking=read.csv("data/drinking.csv", header=TRUE)
 
+
 # simulation data generation - predictors with perfect or high correlation
 set.seed(5678)
 alcohol2= 3* drinking$alcohol   # alcohol & alcohol2 : perfect linear relationship

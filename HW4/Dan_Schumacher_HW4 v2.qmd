@@ -12,9 +12,6 @@ editor: visual
 We use significance level alpha=0.1 in HW4
 
 ```{r}
-#| label : 'set up'
-#| include : false
-
 library(dplyr)
 library(ggplot2)
 library(olsrr)
@@ -26,6 +23,11 @@ df_liver <-
 
 df_sleep <- 
   read.csv('./data/sleep-1.csv')
+df_sleep <-
+  subset(
+    df_sleep,
+    select = -species
+  )
 
 ```
 
@@ -112,11 +114,6 @@ hoslem.test(
 Point out any issues with diagnostics by checking residual plots and cook's distance plot (with cut-off 0.25).
 
 ```{r}
-#debugging
-final_female$model$esr
-```
-
-```{r}
 
 dev.new(
   width = 1000,
@@ -189,7 +186,7 @@ print(
 
 -   **There are no points that have a cooks distance larger than .25 (that's good!)**
 
--   **Diagnostic plots look good!**
+-   **Diagnostic plots look good! Just about all our residuals fall between -2 and +2**
 
 ### c)
 
@@ -210,16 +207,14 @@ print(
 ```
 
 -   **With increase in DB and/or Aspartate, the likelihood of liver disease increases.**
+-   **With every unit increase in DB the odds ratio estimate increases by 2.57**
+-   **With every unit increase of Aspartate the odds ratio estimate increases by 1.01**
 
 ## Exercise 2:
 
 Repeat exercise 1 for males. In addition to the previous questions, also comment on how the models for adult females and adult males differ. Use significance level alpha=0.1
 
 ### a)
-
-```{r}
-
-```
 
 ```{r}
 # MALE Make it just Male
@@ -362,7 +357,8 @@ print(
 )
 ```
 
--   We have 1 outlier with a cook's cutoff of .25. Other than that, the diagnostics plots looks good.
+-   **We have 1 outlier with a cook's cutoff of .25. Other than that, the diagnostics plots looks good.**
+-   **The residuals generally fall between -2 and +2**
 
 ### c)
 
@@ -382,7 +378,11 @@ print(
 )
 ```
 
--   Whenever DB, Alamine, Age, and/or Alkphos increase, the likelihood of the individual being a liver patient increases as well.
+-   **Whenever DB, Alamine, Age, and/or Alkphos increase, the likelihood of the individual being a liver patient increases as well.**
+-   **For every one unit increase of DB, the odds ratio estimate increases by 1.669**
+-   **For every one unit increase of Alamine, the odds ratio estimate increases by 1.016**
+-   **For every one unit increase of Age, the odds ratio estimate increases by 1.021**
+-   **For every one unit increase of Alkphos, the odds ratio estimate increases by 1.002**
 
 ### d) Comparing Female & Male Models
 
@@ -405,7 +405,7 @@ Consider all 6 variables as candidates (do not include species) and two index va
 
 ### a)
 
-First find and specify the best set of predictors via stepwise selection with BIC criteria.
+First find and specify the best set of predictors via stepwise selection with AIC criteria.
 
 ```{r}
 #experiment
@@ -442,8 +442,7 @@ step.model.BIC <-
     scope = list(upper = model.full),
     direction = 'both',
     test ='Chisq',
-    trace = F,
-    k = log(nrow(df_sleep))
+    trace = F
   )
 
 saveRDS(
@@ -458,7 +457,7 @@ print(
   )
 ```
 
--   The only predictor after step wise BIC selection is brain weight.
+-   **The only predictor after step wise AIC selection is sleepexposureindex2**
 
 ### b)
 
@@ -472,7 +471,7 @@ hoslem.test(
   ) 
 ```
 
--   **HosmerLemoeshow's H0: GOF adequate \|\|\| Halt: GOF inadequate. With a p val of .961 we fail to reject H0 and conclude that the GOF is adequate.**
+-   **HosmerLemoeshow's H0: GOF adequate \|\|\| Halt: GOF inadequate. With a p val of .4248 we fail to reject H0 and conclude that the GOF is adequate.**
 
 Point out any issues with diagnostics by checking residual plots and cook's distance plot. Do not remove influential points but just
 
@@ -546,9 +545,9 @@ print(
 
 ```
 
--   **We have one outlier with a cook's cutoff of .25**
+-   **We have two outline with a cook's cutoff of .25**
 
--   **diagnostics plots looks good**
+-   **Diagnostics plots looks good. Most residual fall between -2 and +2.**
 
 ### c)
 
@@ -564,21 +563,13 @@ OR_sleep = exp(final_sleep$coefficients)
 print(
   round(OR_sleep, 3)
 )
-
-print(
-  exp(final_sleep$coefficients)
-)
 ```
 
--   As brain weight increases, the likelihood that a species living at least 10 years also increases.
+-   If our species is in sleepexposureindex two, the likelihood that the species living at least 10 years also increases.
 
 ## Exercise 4:
 
 The index variables in the data set are ordinal, meaning they are categorical and they have a natural ordering. If we treat an index variable as a continuous variable, this will imply a linear change as the index changes. Repeat Exercise 3 a)-c) by treating two index variables as continuous variables.
-
-```{r}
-head(df_sleep)
-```
 
 ```{r}
 #change index vars from ordinal to continuous
@@ -593,6 +584,10 @@ df_sleep_cont <-
         .fns = ~as.numeric(as.character(.))
           )
       )
+```
+
+```{r}
+class(df_sleep_cont$sleepexposureindex)
 ```
 
 ### a)
@@ -619,8 +614,7 @@ step.model.BIC <-
     scope = list(upper = model.full),
     direction = 'both',
     test ='Chisq',
-    trace = F,
-    k = log(nrow(df_sleep_cont))
+    trace = F
   )
 
 saveRDS(
@@ -635,7 +629,11 @@ print(
   )
 ```
 
--   The only predictor after step wise BIC selection is brain weight.
+-   The predictors after step wise AIC selection are:
+    -   brainweight
+    -   totalsleep
+    -   sleepexposureindex
+    -   predationindex
 
 ### b)
 
@@ -649,7 +647,7 @@ hoslem.test(
   ) 
 ```
 
--   **HosmerLemoeshow's H0: GOF adequate \|\|\| Halt: GOF inadequate. With a p val of .961 we fail to reject H0 and conclude that the GOF is adequate.**
+-   **HosmerLemoeshow's H0: GOF adequate \|\|\| Halt: GOF inadequate. With a p val of 0.4248 we fail to reject H0 and conclude that the GOF is adequate.**
 
 Point out any issues with diagnostics by checking residual plots and cook's distance plot. Do not remove influential points but just
 
@@ -718,17 +716,20 @@ inf.id <- which(cooks.distance(final_sleep_cont) > 0.25)
 
 # this prints nothing, meaning that there aren't any points
 print(
-  final_sleep_cont[inf.id,]
+  df_sleep_cont[inf.id,]
   )
+
 ```
 
 ```{r}
-print(inf.id)
+print(
+  summary(final_sleep_cont)
+)
 ```
 
--   **We have one outlier with a cook's cutoff of .25**
+-   **We have four outlier with a cook's cutoff of .25**
 
--   **diagnostics plots looks good**
+-   **diagnostics plots looks good. Our residuals largley fall between -2 and +2**
 
 ### c)
 
@@ -737,9 +738,16 @@ Interpret what the model tells us about relationships between the predictors and
 maximum lifespan being at least 10 years.
 
 ```{r}
-
+summary(final_sleep_cont)
+OR_sleep_cont = exp(final_sleep_cont$coefficients)
+print("Odds Ratios:")
+print(OR_sleep_cont,3)
 ```
 
--   As brain weight increases, the likelihood that a species living at least 10 years also increases.
+-   **As the species brain weight, totalsleep or sleepexposureindex increases, the likelihood that the species living at least 10 years also increases.**
+-   **For every 1 unit increase of brain weight, the odds ratio estimate increase by 1.06**
+-   **For every 1 unit increase of total sleep, the odds ratio estimate increases by 1.43**
+-   **for every 1 category increase of the sleep exposure index, the odds ratio estimate increase by 83.188.**
+-   **For every 1 category increase of the predation index, the odds ratio estimate increase by .034**
 
 ### 

@@ -1,0 +1,406 @@
+---
+title: "Dan_Schumacher_Final_Exam"
+author: "Dan Schumacher"
+format: html
+editor: visual
+---
+
+# Final Exam
+
+```{r}
+#Load Libraries
+library(dplyr)
+library(MASS)
+library(car)
+library(olsrr)
+library(DescTools)
+library(ResourceSelection)
+
+# Set Up
+df_birth <- 
+  read.csv(
+    './data/birthweight_final.csv'
+  )
+
+set.seed(5678)
+
+#Check structure
+str(df_birth) # all integer values
+
+# Check for correlation
+pairs(
+  df_birth[,c(1:10)]
+)
+cor(df_birth$MomWtGain, df_birth$Weight) #.299 (drop later if causing issues)
+cor(df_birth$MomAge, df_birth$Weight)
+
+plot(df_birth$MomWtGain, df_birth$Weight)
+plot(df_birth$MomAge, df_birth$Weight)
+```
+
+### About the data:
+
+The data record live, singleton births to mothers between the ages of 18 and 45 in the United States who were classified as black or white. There are a total of 400 observations in birthweight, and the variables are:
+
+-   Weight: Infant birth weight (gram)
+
+-   Weight_Gr; Categorical variable for indication of low birthweight; 0 is normal, 1 is low birthweight
+
+-   Black: Categorical variable; 0 is white, 1 is black
+
+-   Married: Categorical variable; 0 is not married, 1 is married
+
+-   Boy: Categorical variable; 0 is girl, 1 is boy
+
+-   MomSmoke: Categorical variable; 0 is non-smoking mom, 1 is smoking mom
+
+-   Ed: Categorical variable for Mother's education Level; 0 is high-school grad or less; 1 is college grad or above
+
+-   MomAge: Mother's age (centered to zero)
+
+-   MomWtGain: Mother's weight gain during pregnancy (centered to zero)
+
+-   Visit: number of prenatal visits
+
+## Exercise 1
+
+Consider fitting a multiple linear regression to model Weight using possible explanatory variables; Black, Married, Boy, MomSmoke, Ed, MomAge, MomWtGain, and Visit (all predictors excluding Weight_Gr).
+
+### (1)
+
+Perform the following four model selection methods and compare their best models. Comment on how they differ or similar in terms of selected variables in the final model. No need to interpret outputs.
+
+```{r}
+lm.birth <-
+  lm(
+    Weight ~ .,
+    data = df_birth
+  )
+```
+
+• Stepwise selection with 0.01 p-value criteria for both entry and stay
+
+```{r}
+(model.stepwise.entry <-
+  ols_step_both_p(
+    lm.birth,
+    pent = .01,
+    details = F
+  ))
+model.stepwise.entry$predictors
+```
+
+• Forward selection with 0.01 p-value criteria for entry
+
+```{r}
+(model.forward <-
+  ols_step_forward_p(
+    lm.birth,
+    penter = .01,
+    details = F
+  ))
+model.forward$predictors
+```
+
+• Backward selection with 0.01 p-value criteria for a stay
+
+```{r}
+(model.backward <-
+  ols_step_backward_p(
+    lm.birth,
+    prem = .01,
+    details = F
+  ))
+model.backward$predictors
+```
+
+• Adjusted R-squared criteria
+
+```{r}
+model.best.subset <-
+  ols_step_best_subset(
+    lm.birth
+  )
+# Model with the highest Adj_R_Squared
+model.best.subset$predictors[6]
+```
+
+```{r}
+writeLines(c(
+  'stepwise:',
+  paste(model.stepwise.entry$predictors),
+  '',
+  'forward:',
+  paste(model.forward$predictors),
+  '',
+  'backward:',
+  paste(model.backward$predictors),
+  '',
+  'best subset:',
+  model.best.subset$predictors[6]
+))
+```
+
+-   **Stepwise and Foward both picked up Weight_Gr, MomWtGain and Black as predictors Best subset picked up the same variables but also added Married, Boy, and MomAge. Backwards produced an empty model**
+
+NOTE: R output from Backward selection displays variables "removed" from each step. \*\* does this mean that everything is included?
+
+Answer the following questions from the best model determined by Stepwise selection with 0.01 p-value criteria.
+
+### (2)
+
+Fit the linear regression with the best model determined by stepwise selection and comment on the diagnostics plot. Do not leave an observation that has Cook's distance larger than 0.115. Re-fit the model if necessary.
+
+```{r}
+
+
+#original fit
+# "Weight_Gr" "MomWtGain" "Black"
+lm.question2 <-
+  lm(
+    Weight ~ Weight_Gr + MomWtGain + Black,
+    data = df_birth
+  )
+
+#cooks distance
+inf.id = which(cooks.distance(lm.question2) > .115)
+df_birth[inf.id,] # 2 obs need to be removed
+
+#Remove influential points from model
+lm.question2 <-
+  lm(
+    Weight ~ Weight_Gr + MomWtGain + Black,
+    data = df_birth[-inf.id,]
+  )
+
+#diagnostics plot
+par(
+  mfrow = c(2,2)
+)
+plot(
+  lm.question2,
+  which = c(1:4)
+)
+```
+
+-   **Diagnostic plots look good.**
+
+-   **We removed 2 influential points**
+
+-   **There are no obvious patterns in the residuals**
+
+-   **Residuals fall mostly between -2 and +2**
+
+Finally, how many observations did you use in the final model?
+
+-   **398 observations**
+
+```{r}
+length(lm.question2$model$Weight)
+```
+
+### (3)
+
+How much of the variation in Weight is explained by the final model?
+
+-   **With an R-Sqaured of 0.5854, our model can explain \~59% of the variation in weight**
+
+```{r}
+summary(lm.question2)
+```
+
+### (4)
+
+Interpret the relationship between predictor variables (in the final model) and Weight value specifically.
+
+```{r}
+lm.question2$coefficients
+```
+
+-   **avg baby weighs 3790.32 grams**
+
+-   **If the baby is considered Weight_Gr (flagged with 1) the babies weight decreases by 812.00 grams**
+
+-   **for every unit increase in MomWtGain, the babies weight is increased by 5.8 grams**
+
+-   **If the Baby is black (flagged with 1), the babies weight is decreased by 101.71 grams**
+
+## Exercise 2
+
+Now we consider fitting a logistic regression for low birthweight (Weight_Gr=1). Again, consider Black, Married, Boy, MomSmoke, Ed, MomAge, MomWtGain, and Visit as possible explanatory variables.
+
+```{r}
+# setting up data as factors
+
+# Conver these to factors: Weight_Gr Black Married Boy MomSmoke Ed
+
+df_birth <- 
+  df_birth %>%
+    mutate(
+      across(
+        c(Weight_Gr, Black, Married, Boy, MomSmoke, Ed),
+        .fns = as.factor
+      )
+    )
+
+#Make null and full models
+model.null <- 
+  glm(
+    Weight_Gr ~ 1,
+    data = df_birth,
+    family = binomial
+  )
+
+model.full <- 
+  glm(
+    Weight_Gr ~ .,
+    data = df_birth,
+    family = binomial
+  )
+```
+
+### (1)
+
+Perform the following model selection methods and compare their best models. Comment how they differ or are similar in terms of selected variables
+
+• Stepwise selection with AIC criteria
+
+```{r}
+  step.model.AIC <-
+    step(
+      model.null,
+      scope = list(upper = model.full),
+      direction = 'both',
+      test = 'Chisq',
+      trace = F,
+    )
+  
+  step.model.AIC$coefficients
+```
+
+• Stepwise selection with BIC criteria
+
+```{r}
+step.model.BIC <-
+  step(
+    model.null,
+    scope = list(upper = model.full),
+    direction = 'both',
+    test = 'Chisq',
+    trace = F,
+    k = log(nrow(df_birth))
+  )
+
+step.model.BIC$coefficients
+```
+
+Answer the following questions from the best model determined by stepwise selection with BIC criteria.
+
+### (2)
+
+Fit the logistic regression with the best model determined by stepwise selection with BIC criteria. Do not leave an observation that has Cook's d larger than 0.1. Re-fit the model if necessary. Finally, how many observations did you use in the final model?
+
+-   **There are 400 observations in our model**
+
+```{r}
+#cooks distance
+inf.id = which(cooks.distance(step.model.BIC) > .1)
+
+#There are no influential points
+df_birth[inf.id,]
+
+# There are 400 observations in the model
+length(step.model.BIC$model$Weight)
+```
+
+### (3)
+
+Based on your final model, interpret the explicit relationship between response and predictors using Odds Ratio.
+
+```{r}
+summary(step.model.BIC)
+OR_birth = exp(step.model.BIC$coefficients)
+print('ODDS RATIOS:')
+print(OR_birth)
+```
+
+-   **For every unit increase of weight the odds ratio estimate increases by .118**
+
+### (4)
+
+Which woman has the high chance of delivering a low birthweight infant? For example, the answer will be like "a married, high-educated, older woman has a high chance of delivering a low birth weight infant."
+
+-   **The woman who has the highest chance of delivering a low birth-weight infant is:**
+
+    -   **A \@\$\@**
+
+    -   **B**
+
+    -   **C**
+
+    -   **D**
+
+### (5)
+
+What is the sample proportion of low birth weight infants in the dataset?
+
+```{r}
+table(df_birth$Weight_Gr) / 400
+```
+
+-   **Low birth babies make up 49.25% of our sample.**
+
+### (6)
+
+Perform classification with probability cut-off set as sample proportion you answer in (5). What is the classification rate?
+
+```{r}
+fit.prob <-
+  predict(
+    step.model.BIC,
+    type = 'response'
+  )
+
+cutoff = .4925
+
+predictions <-
+  ifelse(
+    fit.prob >= cutoff, 1,0
+  )
+
+class_rate <-
+  mean(
+    predictions == df_birth$Weight_Gr
+  )
+
+print(
+  paste(
+    "Classification Rate:",
+    round(class_rate, 4)
+    )
+  )
+```
+
+-   **The classification rate is 100% \@\$\@**
+
+### (7)
+
+Comment on the Goodness of fit test and make a conclusion.
+
+```{r}
+df_birth$Weight_Gr
+
+myvec <- df_birth$Weight_Gr %>%  as.numeric()
+
+hoslem_result <- hoslem.test(df_birth$Weight_Gr, myvec, g = 2)
+
+```
+
+\
+
+## Exercise 3
+
+Compare results from Exercise 1-2 and comment on different or similar conclusions from each analysis.
+
+Low birth weight is a risk factor that can lead to infant mortality. If you want to implement a low-birth-weight prevention program, what would you suggest to pregnant women?\
+\
